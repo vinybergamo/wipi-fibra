@@ -2,15 +2,15 @@
 import CustomInput from "@/components/customInput";
 import { primaryBtnSM, secondaryBtnSM } from "@/components/ui/buttons";
 import { useOrderStore } from "@/store/orderStore";
-import { consultarCEP } from "@/utils/functions";
+import { consultarCEP, validarCNPJ, validarCPF } from "@/utils/functions";
 import Link from "next/link";
 
 export default function Order({ params }: { params: { type: 'pf'|'pj' } }) {
-    const {data, setData}= useOrderStore()
+    const {data, setData, errors, setError, clearError}= useOrderStore()
 
     const changeField=(value:string, field: string)=>{
         const getAddress = async()=>{
-            const address = await consultarCEP(value)
+            const address = await consultarCEP(value.replace(/\D/g, ''))
             if(address.erro) return
             else{
                 setData('bairro',address.bairro)
@@ -19,18 +19,37 @@ export default function Order({ params }: { params: { type: 'pf'|'pj' } }) {
                 setData('endereco',address.logradouro)
             }
         }
+        if(errors[field]){
+            clearError(field)
+        }
         setData(field, value)
-        if(field==='cep' && value.length==8){
+        if(field==='cep' && value.replace(/\D/g, '').length==8){
             getAddress()
         }
     }
+    const handleSubmit = async()=>{
+        if(!validarCPF(data.cpfCnpj.replace(/\D/g, ''))&&!validarCNPJ(data.cpfCnpj.replace(/\D/g, ''))){
+            setError('cpfCnpj', 'Documento inválido')
+            return
+        }
+        setData('personType', params.type)
+        setData('cpfCnpj', data.cpfCnpj.replace(/\D/g, ''))
+        setData('cep', data.cep.replace(/\D/g, ''))
+        console.log('submit')
+    }
 
   return (
-    <main className="w-full lg:px-16 px-4 max-w-[1280px]">
+    <form className="w-full lg:px-16 px-4 max-w-[1280px]" onSubmit={(e)=>{e.preventDefault();handleSubmit()}}>
         <div className="flex items-center justify-center gap-5 w-full lg:flex-row flex-col lg:mb-1 mb-5">
             <CustomInput value={data.name} onChange={(e)=>changeField(e.target.value, 'name')} label={params.type === 'pf'?'Nome':'Razão Social'} required={true} placeholder={params.type === 'pf'?'Digite aqui seu nome':'Digite aqui sua razão social'}></CustomInput>
-            <CustomInput value={data.cpfCnpj} onChange={(e)=>changeField(e.target.value, 'cpfCnpj')} label={params.type === 'pf'?'CPF':'CNPJ'} placeholder={params.type === 'pf'?'Digite aqui seu CPF':'Digite aqui o CNPJ da empresa'} required={true}></CustomInput>
-            <CustomInput value={data.cep} onChange={(e)=>changeField(e.target.value, 'cep')} label="CEP" required={true} placeholder="Digite aqui o CEP da sua residência"></CustomInput>
+            <CustomInput errors={errors['cpfCnpj']} value={data.cpfCnpj} onChange={(e)=>changeField(e.target.value, 'cpfCnpj')} mask={params.type == 'pf' ? [
+                                    /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/
+                                ] : [
+                                    /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/
+                                ]} label={params.type === 'pf'?'CPF':'CNPJ'} placeholder={params.type === 'pf'?'Digite aqui seu CPF':'Digite aqui o CNPJ da empresa'} required={true}></CustomInput>
+            <CustomInput value={data.cep} onChange={(e)=>changeField(e.target.value, 'cep')} mask={[
+                                     /\d/, /\d/,/\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/
+                                ]} label="CEP" required={true} placeholder="Digite aqui o CEP da sua residência"></CustomInput>
         </div>
         <div className="flex items-center justify-center gap-5 w-full lg:flex-row flex-col lg:mb-1 mb-5">
             <CustomInput value={data.endereco} onChange={(e)=>changeField(e.target.value, 'endereco')} label='Endereço' required={true} placeholder="Digite aqui seu endereço"></CustomInput>
@@ -44,8 +63,8 @@ export default function Order({ params }: { params: { type: 'pf'|'pj' } }) {
         </div>
         <div className="w-full flex items-center lg:justify-end justify-center gap-5 mt-7 mb-14">
             <Link href={'/'} className={secondaryBtnSM}>Voltar</Link>
-            <button className={primaryBtnSM}>Concluir</button>
+            <input type="submit" className={primaryBtnSM} value={'Concluir'}></input>
         </div>
-    </main>
+    </form>
   );
 }

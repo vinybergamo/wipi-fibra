@@ -1,8 +1,6 @@
 export const consultarCEP = async (cep: string) => {
     let enderecoJSON = await fetch(`/api/cep/${cep}`)
     const endereco = await enderecoJSON.json()
-    console.log(endereco)
-    console.log(enderecoJSON)
     return endereco
 }
 
