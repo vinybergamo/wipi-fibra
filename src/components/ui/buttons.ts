@@ -1,0 +1,5 @@
+export const primaryBtn = "bg-ascents text-white hover:bg-ascents-darker px-4 py-3 min-w-40 rounded-lg transition-all text-center"
+export const secondaryBtn = "bg-white border-[1px] border-ascents text-ascents hover:bg-ascents-darker hover:text-white text-center transition-all px-4 py-3 min-w-40 rounded-lg"
+export const primaryBtnSM = "bg-ascents text-white hover:bg-ascents-darker px-3 py-2 min-w-40 rounded-lg transition-all text-center"
+export const secondaryBtnSM = "bg-white border-[1px] border-ascents text-ascents hover:bg-ascents-darker hover:text-white text-center transition-all px-3 py-2 min-w-40 rounded-lg"
+export const primaryBtnLG = "bg-ascents text-white hover:bg-ascents-darker px-8 py-3 min-w-40 rounded-lg transition-all text-center"
