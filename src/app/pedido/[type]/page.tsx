@@ -1,13 +1,15 @@
 'use client'
+import CityInput from "@/components/cityInput";
 import CustomInput from "@/components/customInput";
 import { primaryBtnSM, secondaryBtnSM } from "@/components/ui/buttons";
 import { useOrderStore } from "@/store/orderStore";
 import { consultarCEP, validarCNPJ, validarCPF } from "@/utils/functions";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Order({ params }: { params: { type: 'pf'|'pj' } }) {
     const {data, setData, errors, setError, clearError}= useOrderStore()
-
+    const router = useRouter()
     const changeField=(value:string, field: string)=>{
         const getAddress = async()=>{
             const address = await consultarCEP(value.replace(/\D/g, ''))
@@ -35,7 +37,7 @@ export default function Order({ params }: { params: { type: 'pf'|'pj' } }) {
         setData('personType', params.type)
         setData('cpfCnpj', data.cpfCnpj.replace(/\D/g, ''))
         setData('cep', data.cep.replace(/\D/g, ''))
-        console.log('submit')
+        router.push('/obrigado')
     }
 
   return (
@@ -59,7 +61,7 @@ export default function Order({ params }: { params: { type: 'pf'|'pj' } }) {
         <div className="flex items-center justify-center gap-5 w-full lg:flex-row flex-col">
             <CustomInput value={data.complement} onChange={(e)=>changeField(e.target.value, 'complement')} label='Complemento' placeholder="Digite aqui o complemento (opcional)"></CustomInput>
             <CustomInput value={data.estado} onChange={(e)=>changeField(e.target.value, 'estado')} label='Estado' required={true} placeholder="Digite aqui seu estado"></CustomInput>
-            <CustomInput value={data.cidade} onChange={(e)=>changeField(e.target.value, 'cidade')} label="Cidade" required={true} placeholder="Selecione sua cidade"></CustomInput>
+            <CityInput label="Cidade" required={true} placeholder="Selecione sua cidade"></CityInput>
         </div>
         <div className="w-full flex items-center lg:justify-end justify-center gap-5 mt-7 mb-14">
             <Link href={'/'} className={secondaryBtnSM}>Voltar</Link>

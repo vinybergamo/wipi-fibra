@@ -19,7 +19,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ label,mask, errors,...props }
             placeholderChar=' '
             mask={mask}
             {...props} className={`text-xs mt-2 focus:outline-0 rounded-sm px-4 py-2 border-[1px] ${errors?'border-danger':'border-ascents'}`}></MaskedInput>
-            :<input {...props} className='text-xs mt-2 focus:outline-0 rounded-sm px-4 py-2 border-ascents border-[1px]'></input>}
+            :<input {...props} className='text-xs mt-2 focus:outline-0 rounded-sm px-4 py-2 border-ascents border-[1px] text-dark-grey-2'></input>}
         </div>
     );
 }
