@@ -9,7 +9,7 @@ export default function Home() {
         <div className="w-full">
           <Image src='/wipi-fibra-logo.png' width={115} height={50} alt='wipi fibra logo'/>
         </div>
-        <Image src='/head-img.png' width={500} height={500} alt='mulher de cabelo cacheado apontando para um celular com um circulo laranja ao fundo'/>
+        <Image src='/woman-img.png' width={500} height={500} alt='mulher de cabelo cacheado apontando para um celular com um circulo laranja ao fundo'/>
       </div>
       <div className="flex items-center justify-center w-full">
         <div className="">
