@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-interface OrderItems{
+export interface OrderItems {
     name: string,
     cpfCnpj: string,
     cep: string,
@@ -10,7 +10,7 @@ interface OrderItems{
     complement: string,
     estado: string,
     cidade: string,
-    personType: 'pf'|'pj'|''
+    personType: 'pf' | 'pj' | ''
 }
 export interface OrderErrors {
     [key: string]: string | false;
@@ -36,7 +36,7 @@ export const useOrderStore = create<OrderState>()((set) => ({
         cidade: '',
         personType: ''
     },
-    errors:{},
+    errors: {},
     setData: (field, newData) => set((state) => ({ data: { ...state.data, [field]: newData } })),
     setError: (field, newData) => set((state) => ({ errors: { ...state.errors, [field]: newData } })),
     clearError: (field) => set((state) => ({ errors: { ...state.errors, [field]: false } })),
