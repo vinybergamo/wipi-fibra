@@ -7,6 +7,7 @@ import { sendForm } from "@/utils/apiCalls";
 import { consultarCEP, validarCNPJ, validarCPF } from "@/utils/functions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
     const { data, setData, errors, setError, clearError } = useOrderStore()
@@ -30,6 +31,7 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
             getAddress()
         }
     }
+
     const handleSubmit = async () => {
         if (!validarCPF(data.cpfCnpj.replace(/\D/g, '')) && !validarCNPJ(data.cpfCnpj.replace(/\D/g, ''))) {
             setError('cpfCnpj', 'Documento inválido')
@@ -38,9 +40,17 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
         setData('personType', params.type)
         setData('cpfCnpj', data.cpfCnpj.replace(/\D/g, ''))
         setData('cep', data.cep.replace(/\D/g, ''))
+    }
+    const send = async () => {
         const res = await sendForm(data)
+        setData('personType', '')
         if (res) router.push('/obrigado')
     }
+    useEffect(() => {
+        if (data.personType !== '') {
+            send()
+        }
+    }, [data])
 
     return (
         <form className="w-full lg:px-16 px-4 max-w-[1280px]" onSubmit={(e) => { e.preventDefault(); handleSubmit() }}>
