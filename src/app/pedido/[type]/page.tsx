@@ -1,6 +1,7 @@
 'use client'
 import CityInput from "@/components/cityInput";
 import CustomInput from "@/components/customInput";
+import CustomInputRadio from "@/components/customInputRadio";
 import { primaryBtnSM, secondaryBtnSM } from "@/components/ui/buttons";
 import { useOrderStore } from "@/store/orderStore";
 import { sendForm } from "@/utils/apiCalls";
@@ -74,6 +75,20 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
                 <CustomInput value={data.complement} onChange={(e) => changeField(e.target.value, 'complement')} label='Complemento' placeholder="Digite aqui o complemento (opcional)"></CustomInput>
                 <CustomInput value={data.estado} onChange={(e) => changeField(e.target.value, 'estado')} label='Estado' required={true} placeholder="Digite aqui seu estado"></CustomInput>
                 <CityInput label="Cidade" required={true} placeholder="Selecione sua cidade"></CityInput>
+            </div>
+            <div className="flex items-center justify-center gap-5 w-full lg:flex-row flex-col lg:mb-1 mb-5">
+                <CustomInput mask={[
+                    '(', /[0-9]/, /[0-9]/, ')', /[0-9]/, '\u00A0', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/, '-', /[0-9]/, /[0-9]/, /[0-9]/, /[0-9]/
+                ]} value={data.whatsapp} onChange={(e) => changeField(e.target.value, 'whatsapp')} label='Whatsapp' required={true} placeholder="(99)9 9999-9999" type="tel"></CustomInput>
+                <CustomInput type="email" value={data.email} onChange={(e) => changeField(e.target.value, 'email')} label='E-mail' required={true} placeholder="Digite aqui o seu e-mail"></CustomInput>
+            </div>
+            <div className="flex items-center justify-center gap-5 lg:w-1/2 w-full lg:flex-row flex-col mt-3">
+                <CustomInputRadio defaultValue={data.plano} label='Plano' handleSelect={(value: string) => { changeField(value, 'plano') }}
+                    values={[{ value: '600mb', label: '600 MB' }, { value: '1gb', label: '1 GB' }, { value: '2gb', label: '2 GB' }]}>
+                </CustomInputRadio>
+                <CustomInputRadio defaultValue={data.local} label='Local de instalação' handleSelect={(value: string) => { changeField(value, 'plano') }}
+                    values={[{ value: 'casa', label: 'Para sua Casa' }, { value: 'empresa', label: 'para sua empresa' }]}>
+                </CustomInputRadio>
             </div>
             <div className="w-full flex items-center lg:justify-end justify-center gap-5 mt-7 mb-14">
                 <Link href={'/'} className={secondaryBtnSM}>Voltar</Link>

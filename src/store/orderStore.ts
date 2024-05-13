@@ -10,7 +10,11 @@ export interface OrderItems {
     complement: string,
     estado: string,
     cidade: string,
-    personType: 'pf' | 'pj' | ''
+    personType: 'pf' | 'pj' | '',
+    plano: string,
+    local: string,
+    whatsapp: string,
+    email: string,
 }
 export interface OrderErrors {
     [key: string]: string | false;
@@ -34,7 +38,11 @@ export const useOrderStore = create<OrderState>()((set) => ({
         complement: '',
         estado: '',
         cidade: '',
-        personType: ''
+        personType: '',
+        plano: '600mb',
+        local: 'casa',
+        whatsapp: '',
+        email: '',
     },
     errors: {},
     setData: (field, newData) => set((state) => ({ data: { ...state.data, [field]: newData } })),
