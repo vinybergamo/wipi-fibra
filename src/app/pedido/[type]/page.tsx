@@ -84,7 +84,7 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
                 <CustomInput type="email" value={data.email} onChange={(e) => changeField(e.target.value, 'email')} label='E-mail' required={true} placeholder="Digite aqui o seu e-mail"></CustomInput>
             </div>
             <h1 className="text-[32px] w-full text-start font-light my-5">Monte seu <span className="text-ascents font-bold">plano</span></h1>
-            <div className="flex w-full items-end justify-between mb-10">
+            <div className="flex xl:flex-row flex-col gap-5 w-full items-end justify-between mb-10">
                 <div className="flex lg:items-center justify-start lg:gap-24 gap-8 w-full lg:flex-row flex-col mt-3">
                     <CustomInputRadio required defaultValue={data.local} label='Sua internet é para...' handleSelect={(value: string) => { changeField(value, 'plano') }}
                         values={[{ value: 'casa', label: 'Casa' }, { value: 'empresa', label: 'Empresa' }]}>

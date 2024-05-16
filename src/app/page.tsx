@@ -17,7 +17,7 @@ export default function Home() {
           <h1 className="text-dark-grey lg:text-7xl text-5xl lg:text-left text-center font-normal w-full">para <span className="text-ascents font-bold">instalação</span>!</h1>
           <p className="mt-6 w-full text-2xl lg:text-left text-center">Preencha o formulário abaixo para dar início ao<br />
             processo de instalação da Wipi em sua casa</p>
-          <div className="flex gap-5 mt-7 lg:mb-0 mb-10">
+          <div className="flex items-center lg:justify-start justify-center gap-5 mt-7 lg:mb-0 mb-10">
             <Link href='/pedido/pf' className={primaryBtn}>Sou PF</Link>
             <Link href='/pedido/pj' className={secondaryBtn}>Sou PJ</Link>
           </div>
