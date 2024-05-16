@@ -93,7 +93,7 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
                         values={[{ value: '600mb', label: '600 mb' }, { value: '1g', label: '1G' }, { value: '2g', label: '2G' }]}>
                     </CustomInputRadio>
                 </div>
-                <div className="w-full flex items-center lg:justify-end justify-center gap-5">
+                <div className="w-full flex items-center lg:justify-end justify-center gap-5 flex-wrap">
                     <Link href={'/'} className={secondaryBtnSM}>Voltar</Link>
                     <input type="submit" className={primaryBtnSM} value={'Concluir'}></input>
                 </div>

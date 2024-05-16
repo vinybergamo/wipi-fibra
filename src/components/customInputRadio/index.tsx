@@ -32,7 +32,7 @@ const CustomInputRadio: React.FC<CustomInputProps> = ({ label, values, handleSel
     return (
         <div className={popins.className + ' w-fit flex flex-col'}>
             <span className='font-medium text-2xl'>{label}{props.required && <span className='text-ascents'>*</span>}</span>
-            <div className='flex items-center justify-start gap-8 mt-2 w-full'>
+            <div className='flex items-center justify-start gap-8 mt-2 w-full flex-wrap'>
                 {values.map((item, index) => (
                     <label key={index} className={`flex items-center lg:text-2xl text-xl opacity-50 checked:opacity-100`}>
                         <input
