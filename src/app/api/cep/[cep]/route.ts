@@ -5,7 +5,6 @@ export const GET = async (
   { params }: { params: { cep: string } }
 ) => {
   const { cep } = params;
-  console.log(cep)
   if (!cep) {
     return NextResponse.json({ error: "Invalid cep" }, { status: 400 });
   } else {

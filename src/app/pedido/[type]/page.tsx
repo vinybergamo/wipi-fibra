@@ -5,15 +5,25 @@ import CustomInputRadio from "@/components/customInputRadio";
 import { primaryBtnSM, secondaryBtnSM } from "@/components/ui/buttons";
 import { useOrderStore } from "@/store/orderStore";
 import { sendForm } from "@/utils/apiCalls";
-import { consultarCEP, validarCNPJ, validarCPF } from "@/utils/functions";
+import { consultarCEP, consultarViabilidade, validarCNPJ, validarCPF } from "@/utils/functions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
     const { data, setData, errors, setError, clearError } = useOrderStore()
+    const [availablePlans, setAvailablePlans]=useState<any>([])
     const router = useRouter()
     const changeField = (value: string, field: string) => {
+        const getViability = async()=>{
+            const viabilidade = await consultarViabilidade(value.replace(/\D/g, ''))
+            console.log(viabilidade)
+            if(viabilidade.availabilityDescription.startsWith('Inviável')){
+                setError('cep', 'Instalação indisponível para o endereço fornecido')
+            } else {
+                setAvailablePlans(viabilidade.products)
+            }
+        }
         const getAddress = async () => {
             const address = await consultarCEP(value.replace(/\D/g, ''))
             if (address.erro) return
@@ -30,12 +40,16 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
         setData(field, value)
         if (field === 'cep' && value.replace(/\D/g, '').length == 8) {
             getAddress()
+            getViability()
         }
     }
 
     const handleSubmit = async () => {
         if (!validarCPF(data.cpfCnpj.replace(/\D/g, '')) && !validarCNPJ(data.cpfCnpj.replace(/\D/g, ''))) {
             setError('cpfCnpj', 'Documento inválido')
+            return
+        } else if(errors.cep&&errors.cep =='Instalação indisponível para o endereço fornecido'){
+            setError ('tecnical', errors.cep )
             return
         }
         setData('personType', params.type)
@@ -62,7 +76,7 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
                 ] : [
                     /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/
                 ]} label={params.type === 'pf' ? 'CPF' : 'CNPJ'} placeholder={params.type === 'pf' ? 'Digite aqui seu CPF' : 'Digite aqui o CNPJ da empresa'} required={true}></CustomInput>
-                <CustomInput value={data.cep} onChange={(e) => changeField(e.target.value, 'cep')} mask={[
+                <CustomInput errors={errors['cep']} value={data.cep} onChange={(e) => changeField(e.target.value, 'cep')} mask={[
                     /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/
                 ]} label="CEP" required={true} placeholder="Digite aqui o CEP da sua residência"></CustomInput>
             </div>
@@ -84,20 +98,21 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
                 <CustomInput type="email" value={data.email} onChange={(e) => changeField(e.target.value, 'email')} label='E-mail' required={true} placeholder="Digite aqui o seu e-mail"></CustomInput>
             </div>
             <h1 className="text-[32px] w-full text-start font-light my-5">Monte seu <span className="text-ascents font-bold">plano</span></h1>
-            <div className="flex xl:flex-row flex-col gap-5 w-full items-end justify-between mb-10">
+            <div className="flex xl:flex-row flex-col gap-5 w-full items-end justify-between">
                 <div className="flex lg:items-center justify-start lg:gap-24 gap-8 w-full lg:flex-row flex-col mt-3">
                     <CustomInputRadio required defaultValue={data.local} label='Sua internet é para...' handleSelect={(value: string) => { changeField(value, 'plano') }}
                         values={[{ value: 'casa', label: 'Casa' }, { value: 'empresa', label: 'Empresa' }]}>
                     </CustomInputRadio>
                     <CustomInputRadio defaultValue={data.plano} label='Qual seu plano?' required handleSelect={(value: string) => { changeField(value, 'plano') }}
-                        values={[{ value: '600mb', label: '600 mb' }, { value: '1g', label: '1G' }, { value: '2g', label: '2G' }]}>
+                        values={availablePlans.length>0?availablePlans:[{ value: '600mb', label: '600 mb' }, { value: '1g', label: '1G' }, { value: '2g', label: '2G' }]}>
                     </CustomInputRadio>
                 </div>
-                <div className="w-full flex items-center lg:justify-end justify-center gap-5 flex-wrap">
+                <div className="w-[90%] flex items-center lg:justify-end justify-center gap-5 flex-wrap">
                     <Link href={'/'} className={secondaryBtnSM}>Voltar</Link>
                     <input type="submit" className={primaryBtnSM} value={'Concluir'}></input>
                 </div>
             </div>
+                    {errors['tecnical']?<p className="text-xs text-danger w-full text-center lg:text-end mt-5">{errors['tecnical']}</p>:""}
         </form>
     );
 }
