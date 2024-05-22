@@ -15,6 +15,7 @@ export interface OrderItems {
     local: string,
     whatsapp: string,
     email: string,
+    viavel: boolean,
 }
 export interface OrderErrors {
     [key: string]: string | false;
@@ -43,6 +44,7 @@ export const useOrderStore = create<OrderState>()((set) => ({
         local: '',
         whatsapp: '',
         email: '',
+        viavel: false,
     },
     errors: {},
     setData: (field, newData) => set((state) => ({ data: { ...state.data, [field]: newData } })),

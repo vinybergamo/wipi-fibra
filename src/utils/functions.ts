@@ -1,5 +1,8 @@
 export const consultarCEP = async (cep: string) => {
-    let enderecoJSON = await fetch(`/api/cep/${cep}`)
+    let enderecoJSON = await fetch(`/api/cep/${cep}`,{method:'post'})
+    if(enderecoJSON.status!==200){
+        return false
+    }
     const endereco = await enderecoJSON.json()
     return endereco
 }
@@ -68,8 +71,7 @@ export const consultarViabilidade = async (cep:string)=>{
         'Content-Type': 'application/json'
       },})
     if(viabilidadeJSON.status == 200){
-        const res = viabilidadeJSON.json()
-        console.log(res)
+        const res = await viabilidadeJSON.json()
         return res
     } else return {availabilityDescription:'Inviável'}
 }

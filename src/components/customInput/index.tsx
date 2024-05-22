@@ -12,7 +12,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ label, mask, errors, ...props
 
     return (
         <div className={popins.className + ' w-full flex flex-col'}>
-            <span className='font-medium text-xl'>{label}{props.required && <span className='text-ascents'>*</span>}
+            <span className='font-medium text-xl text-dark-grey'>{label}{props.required && <span className='text-ascents'>*</span>}
                 {errors && <span className="text-xs text-danger font-normal ml-3">{errors}</span>}</span>
             {mask ?
                 <MaskedInput

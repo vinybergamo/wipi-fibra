@@ -7,43 +7,23 @@ import { useOrderStore } from "@/store/orderStore";
 import { sendForm } from "@/utils/apiCalls";
 import { consultarCEP, consultarViabilidade, validarCNPJ, validarCPF } from "@/utils/functions";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
     const { data, setData, errors, setError, clearError } = useOrderStore()
+    if(!data.viavel){
+        redirect('/')
+    }
     const [availablePlans, setAvailablePlans]=useState<any>([])
     const router = useRouter()
     const changeField = (value: string, field: string) => {
-        const getViability = async()=>{
-            const viabilidade = await consultarViabilidade(value.replace(/\D/g, ''))
-            console.log(viabilidade)
-            if(viabilidade.availabilityDescription.startsWith('Inviável')){
-                setError('cep', 'Instalação indisponível para o endereço fornecido')
-            } else {
-                setAvailablePlans(viabilidade.products)
-            }
-        }
-        const getAddress = async () => {
-            const address = await consultarCEP(value.replace(/\D/g, ''))
-            if (address.erro) return
-            else {
-                setData('bairro', address.bairro)
-                setData('cidade', address.localidade)
-                setData('estado', address.uf)
-                setData('endereco', address.logradouro)
-            }
-        }
         if (errors[field]) {
             clearError(field)
         }
         setData(field, value)
-        if (field === 'cep' && value.replace(/\D/g, '').length == 8) {
-            getAddress()
-            getViability()
-        }
-    }
 
+    }
     const handleSubmit = async () => {
         if (!validarCPF(data.cpfCnpj.replace(/\D/g, '')) && !validarCNPJ(data.cpfCnpj.replace(/\D/g, ''))) {
             setError('cpfCnpj', 'Documento inválido')
