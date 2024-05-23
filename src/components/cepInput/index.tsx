@@ -42,12 +42,7 @@ export default function CepInput() {
     }
 
     const getViability = async()=>{
-        const address = await consultarCEP(`${selectedAdd}&number=${data.numero}`)
-        if(!address || address.error){
-            setError('servidor', 'Estamos com problemas técnicos, por favor tente novamente mais tarde')
-            return
-        }
-        const viabilidade = await consultarViabilidade(multiAddr.length>1? address.address[0]?.id||'' : data.cep.replace(/\D/g, ''))
+        const viabilidade = await consultarViabilidade(JSON.stringify({address: selectedAdd, number: data.numero}))
         setLoading(false)
         if(viabilidade.availabilityDescription.startsWith('Inviável')){
             router.push('/inviavel')

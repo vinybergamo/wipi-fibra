@@ -62,14 +62,14 @@ export const validarCNPJ = (cnpj: string): boolean => {
     return parseInt(cnpj.charAt(12)) === digitoVerificador1 && parseInt(cnpj.charAt(13)) === digitoVerificador2;
 };
 
-export const consultarViabilidade = async (cep:string)=>{
-    const token = process.env.WIPI_TOKEN;
-    let viabilidadeJSON = await fetch(`/api/viabilidade/${cep}`,{        
+export const consultarViabilidade = async (data:string)=>{
+    let viabilidadeJSON = await fetch(`/api/viabilidade`,{        
         method:'POST',
         headers: {
-        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
-      },})
+        },
+        body: data,
+    })
     if(viabilidadeJSON.status == 200){
         const res = await viabilidadeJSON.json()
         return res

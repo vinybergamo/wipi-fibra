@@ -84,7 +84,10 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
                         values={[{ value: 'casa', label: 'Casa' }, { value: 'empresa', label: 'Empresa' }]}>
                     </CustomInputRadio>
                     <CustomInputRadio defaultValue={data.plano} label='Qual seu plano?' required handleSelect={(value: string) => { changeField(value, 'plano') }}
-                        values={availablePlans.length>0?availablePlans:[{ value: '600mb', label: '600 mb' }, { value: '1g', label: '1G' }, { value: '2g', label: '2G' }]}>
+                        values={availablePlans.length>0?availablePlans:[
+                        { value: '600 mega - R$ 109,00 por mês', label: '600 mega - R$ 109,00 por mês' }, 
+                        { value: '1 Giga - R$ 169,00 por mês', label: '1 Giga - R$ 169,00 por mês' }, 
+                        { value: '2 Gigas - R$ 269,00 por mês', label: '2 Gigas - R$ 269,00 por mês' }]}>
                     </CustomInputRadio>
                 </div>
                 <div className="w-[90%] flex items-center lg:justify-end justify-center gap-5 flex-wrap">
