@@ -4,7 +4,6 @@ export const POST = async (
   req: NextRequest,
 ) => {
   const { address, number } = await req.json();
-  console.log(address, number)
   if (!address && !number) {
     return NextResponse.json({ error: "Invalid address" }, { status: 400 });
   } else {
@@ -21,9 +20,7 @@ export const POST = async (
         body: JSON.stringify(body)
       });
   
-      console.log(dataJSON)
       const data = await dataJSON.json()
-      console.log(data)
       if (data.success == 'OK'){
         return NextResponse.json({availabilityDescription: 'Viável'}, { status: 200 });
       } else {
