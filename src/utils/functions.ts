@@ -65,7 +65,7 @@ export const validarCNPJ = (cnpj: string): boolean => {
 export const consultarViabilidade = async (cep:string)=>{
     const token = process.env.WIPI_TOKEN;
     let viabilidadeJSON = await fetch(`/api/viabilidade/${cep}`,{        
-        method:'GET',
+        method:'POST',
         headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'

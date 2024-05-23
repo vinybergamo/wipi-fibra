@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-export const GET = async (
+export const POST = async (
   req: NextRequest,
   { params }: { params: { cep: string } }
 ) => {
