@@ -35,9 +35,9 @@ export default function CepInput() {
                 const addr = address.addresses[0]
                 setSelectedAdd(addr.description1)
                 const parts = addr.description1.split(',')
-                const city = parts[1].split('-')[1]
-                const bairro = parts[1].split('-')[0]
-                const state = parts[2].split(' (')[0]
+                const city = parts[1].split('-')[1].trim()
+                const bairro = parts[1].split('-')[0].trim()
+                const state = parts[2].split(' (')[0].trim()
                 setData('bairro', bairro)
                 setData('cidade', city)
                 setData('estado', state)
@@ -71,6 +71,14 @@ export default function CepInput() {
                     <select id='street-selector'
                         onChange={(e) => {
                             setSelectedAdd(e.target.value)
+                            const parts = e.target.value.split(',')
+                            const city = parts[1].split('-')[1].trim()
+                            const bairro = parts[1].split('-')[0].trim()
+                            const state = parts[2].split(' (')[0].trim()
+                            setData('bairro', bairro)
+                            setData('cidade', city)
+                            setData('estado', state)
+                            setData('endereco', parts[0])
                             getAddress(e.target.value)
                         }}
                         className="mt-1 block w-full p-2.5 border border-ascents rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-ascents">
