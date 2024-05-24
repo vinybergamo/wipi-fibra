@@ -1,6 +1,6 @@
 export const consultarCEP = async (cep: string) => {
-    let enderecoJSON = await fetch(`/api/cep/${cep}`,{method:'post'})
-    if(enderecoJSON.status!==200){
+    let enderecoJSON = await fetch(`/api/cep`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ zipcode: cep }) });
+    if (enderecoJSON.status !== 200) {
         return false
     }
     const endereco = await enderecoJSON.json()
@@ -62,16 +62,16 @@ export const validarCNPJ = (cnpj: string): boolean => {
     return parseInt(cnpj.charAt(12)) === digitoVerificador1 && parseInt(cnpj.charAt(13)) === digitoVerificador2;
 };
 
-export const consultarViabilidade = async (data:string)=>{
-    let viabilidadeJSON = await fetch(`/api/viabilidade`,{        
-        method:'POST',
+export const consultarViabilidade = async (data: string) => {
+    let viabilidadeJSON = await fetch(`/api/viabilidade`, {
+        method: 'POST',
         headers: {
-        'Content-Type': 'application/json'
+            'Content-Type': 'application/json'
         },
         body: data,
     })
-    if(viabilidadeJSON.status == 200){
+    if (viabilidadeJSON.status == 200) {
         const res = await viabilidadeJSON.json()
         return res
-    } else return {availabilityDescription:'Inviável'}
+    } else return { availabilityDescription: 'Inviável' }
 }
