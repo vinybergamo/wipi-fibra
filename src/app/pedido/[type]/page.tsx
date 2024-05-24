@@ -12,10 +12,10 @@ import { useEffect, useState } from "react";
 
 export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
     const { data, setData, errors, setError, clearError } = useOrderStore()
-    if(!data.viavel){
+    if (!data.viavel) {
         redirect('/')
     }
-    const [availablePlans, setAvailablePlans]=useState<any>([])
+    const [availablePlans, setAvailablePlans] = useState<any>([])
     const router = useRouter()
     const changeField = (value: string, field: string) => {
         if (errors[field]) {
@@ -28,8 +28,8 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
         if (!validarCPF(data.cpfCnpj.replace(/\D/g, '')) && !validarCNPJ(data.cpfCnpj.replace(/\D/g, ''))) {
             setError('cpfCnpj', 'Documento inválido')
             return
-        } else if(errors.cep&&errors.cep =='Instalação indisponível para o endereço fornecido'){
-            setError ('tecnical', errors.cep )
+        } else if (errors.cep && errors.cep == 'Instalação indisponível para o endereço fornecido') {
+            setError('tecnical', errors.cep)
             return
         }
         setData('personType', params.type)
@@ -80,14 +80,14 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
             <h1 className="text-[32px] w-full text-start font-light my-5">Monte seu <span className="text-ascents font-bold">plano</span></h1>
             <div className="flex xl:flex-row flex-col gap-5 w-full items-end justify-between">
                 <div className="flex lg:items-center justify-start lg:gap-24 gap-8 w-full lg:flex-row flex-col mt-3">
-                    <CustomInputRadio required defaultValue={data.local} label='Sua internet é para...' handleSelect={(value: string) => { changeField(value, 'plano') }}
+                    <CustomInputRadio required defaultValue={data.local} label='Sua internet é para...' handleSelect={(value: string) => { changeField(value, 'local') }}
                         values={[{ value: 'casa', label: 'Casa' }, { value: 'empresa', label: 'Empresa' }]}>
                     </CustomInputRadio>
                     <CustomInputRadio defaultValue={data.plano} label='Qual seu plano?' required handleSelect={(value: string) => { changeField(value, 'plano') }}
-                        values={availablePlans.length>0?availablePlans:[
-                        { value: '600 mega - R$ 109,00 por mês', label: '600 mega - R$ 109,00 por mês' }, 
-                        { value: '1 Giga - R$ 169,00 por mês', label: '1 Giga - R$ 169,00 por mês' }, 
-                        { value: '2 Gigas - R$ 269,00 por mês', label: '2 Gigas - R$ 269,00 por mês' }]}>
+                        values={availablePlans.length > 0 ? availablePlans : [
+                            { value: '600 mega - R$ 109,00 por mês', label: '600 mega - R$ 109,00 por mês' },
+                            { value: '1 Giga - R$ 169,00 por mês', label: '1 Giga - R$ 169,00 por mês' },
+                            { value: '2 Gigas - R$ 269,00 por mês', label: '2 Gigas - R$ 269,00 por mês' }]}>
                     </CustomInputRadio>
                 </div>
                 <div className="w-[90%] flex items-center lg:justify-end justify-center gap-5 flex-wrap">
@@ -95,7 +95,7 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
                     <input type="submit" className={primaryBtnSM} value={'Concluir'}></input>
                 </div>
             </div>
-                    {errors['tecnical']?<p className="text-xs text-danger w-full text-center lg:text-end mt-5">{errors['tecnical']}</p>:""}
+            {errors['tecnical'] ? <p className="text-xs text-danger w-full text-center lg:text-end mt-5">{errors['tecnical']}</p> : ""}
         </form>
     );
 }
