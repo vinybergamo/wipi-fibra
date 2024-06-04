@@ -30,6 +30,7 @@ export default function CepInput() {
             return
         }
         else {
+            clearError('cepnotfound')
             setMultiAddr(address.addresses)
             if (address.addresses.length == 1) {
                 const addr = address.addresses[0]
@@ -87,11 +88,11 @@ export default function CepInput() {
                     </select>
                 </div>
             }
-            {selectedAdd != '' &&
+            {selectedAdd != '' && !errors['cepnotfound'] &&
                 <CustomInput errors={errors['numero']} value={data.numero} onChange={(e) => changeField(e.target.value, 'numero')} label="Agora digite o número da sua residência." placeholder="Digite aqui o número da sua residência"></CustomInput>
             }
             {errors['servidor'] && <span className="text-xs text-danger font-normal ml-3">{errors['servidor']}</span>}
-            {selectedAdd && data.numero && <button className={primaryBtn} onClick={getViability}>Consultar</button>}
+            {selectedAdd && data.numero && !errors['cepnotfound'] && <button className={primaryBtn} onClick={getViability}>Consultar</button>}
         </>
     );
 }
