@@ -18,9 +18,6 @@ export default function CepInput() {
             clearError(field)
         }
         setData(field, value)
-        if (field === 'cep' && value.replace(/\D/g, '').length == 8) {
-            getAddress(value)
-        }
     }
 
     const getAddress = async (value: string) => {
@@ -93,6 +90,7 @@ export default function CepInput() {
             }
             {errors['servidor'] && <span className="text-xs text-danger font-normal ml-3">{errors['servidor']}</span>}
             {selectedAdd && data.numero && !errors['cepnotfound'] && <button className={primaryBtn} onClick={getViability}>Consultar</button>}
+            {multiAddr.length == 0 && !selectedAdd && <button className={primaryBtn} onClick={() => getAddress(data.cep)}>Pesquisar CEP</button>}
         </>
     );
 }
