@@ -84,7 +84,6 @@ export default function CepInput() {
                             setData('cidade', city)
                             setData('estado', state)
                             setData('endereco', parts[0])
-                            setMultiAddr([e.target.value])
                         }}
                         className="mt-1 block w-full p-2.5 border border-ascents rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-ascents">
                         <option value={''} className='text-xs'>Selecione</option>
