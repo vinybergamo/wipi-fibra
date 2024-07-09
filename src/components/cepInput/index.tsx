@@ -5,6 +5,7 @@ import { consultarCEP, consultarViabilidade } from "@/utils/functions";
 import { useState } from "react";
 import CustomInput from "../customInput";
 import { useRouter } from "next/navigation";
+import Loading from "../loading";
 
 export default function CepInput() {
     const { data, setData, errors, setError, clearError } = useOrderStore()
@@ -21,9 +22,12 @@ export default function CepInput() {
     }
 
     const getAddress = async (value: string) => {
+        if(loading) return
+        setLoading(true)
         const address = await consultarCEP(value.replace(/\D/g, ''))
         if (address.error || !address) {
             setError('cepnotfound', 'CEP não encontrado')
+            setLoading(false)
             return
         }
         else {
@@ -42,17 +46,20 @@ export default function CepInput() {
                 setData('endereco', parts[0])
             }
         }
+        setLoading(false)
     }
 
     const getViability = async () => {
+        if(loading) return
+        setLoading(true)
         const viabilidade = await consultarViabilidade(JSON.stringify({ address: selectedAdd, number: data.numero }))
-        setLoading(false)
         if (viabilidade.availabilityDescription.startsWith('Inviável')) {
             router.push('/inviavel')
         } else {
             setData('viavel', true)
             router.push('/viavel')
         }
+        setLoading(false)
     }
 
 
@@ -77,11 +84,12 @@ export default function CepInput() {
                             setData('cidade', city)
                             setData('estado', state)
                             setData('endereco', parts[0])
-                            getAddress(e.target.value)
+                            setMultiAddr([e.target.value])
                         }}
                         className="mt-1 block w-full p-2.5 border border-ascents rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-ascents">
                         <option value={''} className='text-xs'>Selecione</option>
-                        {multiAddr.map((item, index) => (<option value={item['description' + String(index + 1)]} key={index} className='text-xs'>{item['description' + String(index + 1)]}</option>))}
+                        {multiAddr.map((item, index) => (
+                            <option value={item['description' + String(index + 1)]} key={index} className='text-xs'>{item['description' + String(index + 1)]}</option>))}
                     </select>
                 </div>
             }
@@ -89,8 +97,8 @@ export default function CepInput() {
                 <CustomInput errors={errors['numero']} value={data.numero} onChange={(e) => changeField(e.target.value, 'numero')} label="Agora digite o número da sua residência." placeholder="Digite aqui o número da sua residência"></CustomInput>
             }
             {errors['servidor'] && <span className="text-xs text-danger font-normal ml-3">{errors['servidor']}</span>}
-            {selectedAdd && data.numero && !errors['cepnotfound'] && <button className={primaryBtn} onClick={getViability}>Consultar</button>}
-            {multiAddr.length == 0 && !selectedAdd && <button className={primaryBtn} onClick={() => getAddress(data.cep)}>Pesquisar CEP</button>}
+            {selectedAdd && data.numero && !errors['cepnotfound'] && <button disabled={loading} className={primaryBtn+ ' w-full'} onClick={getViability}>{loading?<Loading/>:'Consultar'}</button>}
+            {multiAddr.length == 0 && !selectedAdd && <button disabled={loading} className={primaryBtn+ ' w-full'} onClick={() => getAddress(data.cep)}>{loading?<Loading/>:'Pesquisar CEP'}</button>}
         </>
     );
 }

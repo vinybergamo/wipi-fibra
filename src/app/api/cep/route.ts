@@ -14,7 +14,7 @@ export const POST = async (
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ zipcode: zipcode })
+        body: JSON.stringify({ zipcode: `${zipcode}` })
       });
       const data = await dataJSON.json()
       return NextResponse.json(data, { status: 200 });
