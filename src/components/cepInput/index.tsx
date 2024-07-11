@@ -25,10 +25,13 @@ export default function CepInput() {
         if(loading) return
         setLoading(true)
         const address = await consultarCEP(value.replace(/\D/g, ''))
-        if (address.error || !address) {
+        console.log('endereço: ',address)
+        if (address.error == 'Not found') {
             setError('cepnotfound', 'CEP não encontrado')
             setLoading(false)
             return
+        } else if(address.error){
+            setError('cepnotfound', `${address.error}`)
         }
         else {
             clearError('cepnotfound')

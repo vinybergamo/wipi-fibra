@@ -1,10 +1,11 @@
 export const consultarCEP = async (cep: string) => {
-    let enderecoJSON = await fetch(`/api/cep`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ zipcode: cep }) });
-    if (enderecoJSON.status !== 200) {
-        return false
+    try{
+        let enderecoJSON = await fetch(`/api/cep`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ zipcode: cep }) });
+        const endereco = await enderecoJSON.json()
+        return endereco
+    } catch(error){
+        return {error}
     }
-    const endereco = await enderecoJSON.json()
-    return endereco
 }
 
 export const validarCPF = (cpf: string): boolean => {

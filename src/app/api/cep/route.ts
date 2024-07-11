@@ -17,7 +17,7 @@ export const POST = async (
         body: JSON.stringify({ zipcode: `${zipcode}` })
       });
       const data = await dataJSON.json()
-      return NextResponse.json(data, { status: 200 });
+      return NextResponse.json(data, { status: dataJSON.status });
     } catch (error) {
       return NextResponse.json({ error }, { status: 400 });
     }
