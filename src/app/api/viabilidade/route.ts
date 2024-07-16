@@ -1,33 +1,45 @@
+import axios from "axios";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const POST = async (
   req: NextRequest,
 ) => {
-  const { address, number } = await req.json();
+  const body = await req.json();
+  const { address, number} = body
   if (!address && !number) {
     return NextResponse.json({ error: "Invalid address" }, { status: 400 });
   } else {
-    try{
-      const body = {
-        address : address,
-        number : number
+    try {
+      let token = body.token
+      if(!body.token){
+        const login = await axios.post(
+          "https://api.wipi.com.br/public/api/integracao/login",
+          {
+            email: process.env.WIPI_API_USERNAME,
+            password: process.env.WIPI_API_PASSWORD,
+          }
+        );
+        if (!login.data.success) {
+          throw new Error("Api error");
+        }
+        token = login.data.success.auth.access_token
       }
-      const dataJSON = await fetch('https://wipi-viabilidade-api.onrender.com/viabilidade/endereco', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
   
-      const data = await dataJSON.json()
-      if (data.success == 'OK'){
-        return NextResponse.json({availabilityDescription: 'Viável'}, { status: 200 });
-      } else {
-        return NextResponse.json({availabilityDescription: 'Inviável'}, { status: 200 });
+      const response = await axios.get(
+        `https://api.wipi.com.br/public/api/integracao/vtal/endereco?address=${address}&number=${number}`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+  
+      if (!response.data.success) {
+        throw new Error("Api error");
       }
-    } catch (error){
-      return NextResponse.json({error}, { status: 400 });
+      return NextResponse.json({ success: "OK", response: response.data}, { status: 200 });
+    } catch (error) {
+      return NextResponse.json({ error }, { status: 400 });
     }
   }
 };

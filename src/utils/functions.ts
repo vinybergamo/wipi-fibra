@@ -1,9 +1,11 @@
 export const consultarCEP = async (cep: string) => {
     try{
-        let enderecoJSON = await fetch(`/api/cep`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ zipcode: cep }) });
+        let enderecoJSON = await fetch(`/api/cep`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ zipcode: cep }) });
         const endereco = await enderecoJSON.json()
         return endereco
     } catch(error){
+        console.log('erro buscando CEP: ',error)
         return {error}
     }
 }
@@ -73,6 +75,9 @@ export const consultarViabilidade = async (data: string) => {
     })
     if (viabilidadeJSON.status == 200) {
         const res = await viabilidadeJSON.json()
-        return res
-    } else return { availabilityDescription: 'Inviável' }
+        if(res.success!=='OK') return { availabilityDescription: 'Inviável' } 
+        return {availabilityDescription: 'Viável'}
+    } else{
+        return { availabilityDescription: 'Inviável' }
+    }
 }

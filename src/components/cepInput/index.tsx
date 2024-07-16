@@ -6,9 +6,11 @@ import { useState } from "react";
 import CustomInput from "../customInput";
 import { useRouter } from "next/navigation";
 import Loading from "../loading";
+import { useTokenStore } from "@/store/tokenStore";
 
 export default function CepInput() {
     const { data, setData, errors, setError, clearError } = useOrderStore()
+    const {setToken, token }=useTokenStore()
     const [loading, setLoading] = useState(false)
     const [multiAddr, setMultiAddr] = useState<any[]>([])
     const [selectedAdd, setSelectedAdd] = useState<string>('')
@@ -25,17 +27,13 @@ export default function CepInput() {
         if(loading) return
         setLoading(true)
         const address = await consultarCEP(value.replace(/\D/g, ''))
-        console.log('endereço: ',address)
-        if (address.error == 'Not found') {
-            setError('cepnotfound', 'CEP não encontrado')
-            setLoading(false)
-            return
-        } else if(address.error){
-            setError('cepnotfound', `${address.error}`)
+        if(address.error){
+            setError('cepnotfound', address.error.message==='Request failed with status code 404'?'CEP não encontrado':address.error.message)
         }
         else {
             clearError('cepnotfound')
             setMultiAddr(address.addresses)
+            setToken(address.token)
             if (address.addresses.length == 1) {
                 const addr = address.addresses[0]
                 setSelectedAdd(addr.description1)
@@ -55,7 +53,7 @@ export default function CepInput() {
     const getViability = async () => {
         if(loading) return
         setLoading(true)
-        const viabilidade = await consultarViabilidade(JSON.stringify({ address: selectedAdd, number: data.numero }))
+        const viabilidade = await consultarViabilidade(JSON.stringify({ address: selectedAdd, number: data.numero, token }))
         if (viabilidade.availabilityDescription.startsWith('Inviável')) {
             router.push('/inviavel')
         } else {
