@@ -79,16 +79,22 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
             </div>
             <h1 className="text-[32px] w-full text-start font-light my-5">Monte seu <span className="text-ascents font-bold">plano</span></h1>
             <div className="flex xl:flex-row flex-col gap-5 w-full items-end justify-between">
-                <div className="flex lg:items-center justify-start lg:gap-24 gap-8 w-full lg:flex-row flex-col mt-3">
+                <div className="flex items-start justify-start lg:gap-24 gap-8 w-full lg:flex-row flex-col mt-3">
                     <CustomInputRadio required defaultValue={data.local} label='Sua internet é para...' handleSelect={(value: string) => { changeField(value, 'local') }}
                         values={[{ value: 'casa', label: 'Casa' }, { value: 'empresa', label: 'Empresa' }]}>
                     </CustomInputRadio>
-                    <CustomInputRadio defaultValue={data.plano} label='Qual seu plano?' required handleSelect={(value: string) => { changeField(value, 'plano') }}
-                        values={availablePlans.length > 0 ? availablePlans : [
-                            { value: '600 mega - R$ 109,00 por mês', label: '600 mega - R$ 109,00 por mês' },
-                            { value: '1 Giga - R$ 169,00 por mês', label: '1 Giga - R$ 169,00 por mês' },
-                            { value: '2 Gigas - R$ 269,00 por mês', label: '2 Gigas - R$ 269,00 por mês' }]}>
-                    </CustomInputRadio>
+                    <div>
+
+                        <CustomInputRadio defaultValue={data.plano} label='Qual seu plano?' required handleSelect={(value: string) => { changeField(value, 'plano') }}
+                            values={availablePlans.length > 0 ? availablePlans : [
+                                { value: '600 mega - R$ 109,00 por mês', label: '600 mega - R$ 109,00 por mês' },
+                                { value: '1 Giga - R$ 169,00 por mês', label: '1 Giga - R$ 169,00 por mês' },
+                                { value: '2 Gigas - R$ 269,00 por mês', label: '2 Gigas - R$ 269,00 por mês' }]}>
+                        </CustomInputRadio>
+                        <span className="text-xs text-start text-dark-grey-2 mt-2">*Ofertas exclusivas para pagamento online realizados até a data de vencimento via pix, débito ou crédito, através da Área do Assinante Wipi.<br />
+                            Após o vencimento, será cobrado valor original de mensalidade do plano contratado.<br /><br />
+                            **Consulte viabilidade técnica para o seu endereço.</span>
+                    </div>
                 </div>
                 <div className="w-[90%] flex items-center lg:justify-end justify-center gap-5 flex-wrap">
                     <Link href={'/'} className={secondaryBtnSM}>Voltar</Link>
