@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { genSaltSync, hashSync, compareSync } from 'bcrypt';
 
-@Entity()
+@Entity({ name: 'admins' })
 export class Admins {
     @PrimaryGeneratedColumn()
     id: number;
