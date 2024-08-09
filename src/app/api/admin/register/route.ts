@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDatabase, getConnection } from "../../db/connect";
 import { Admins } from "@/entity/admin";
-import { getRepository, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 export const POST = async (req: NextRequest) => {
     const { user, password } = await req.json();

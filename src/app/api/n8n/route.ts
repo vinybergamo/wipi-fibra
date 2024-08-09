@@ -17,7 +17,6 @@ export const POST = async (
         await connectDatabase()
         const connection = await getConnection()
         consultsRepository = connection.getRepository(Consults)
-        console.log(consultsRepository)
     } catch (error) {
         console.log(error)
     }
