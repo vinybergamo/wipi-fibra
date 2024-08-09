@@ -1,15 +1,12 @@
 import { Admins } from "@/entity/admin"
 import { Consults } from "@/entity/consults"
-import { Connection, getConnectionManager } from "typeorm"
+import { DataSource } from "typeorm";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions.js"
 
-let connection: Connection
+let dataSource: DataSource;
 export const connectDatabase = async () => {
-    const connectionManager = getConnectionManager()
-    if (connectionManager.has('default')) {
-        connection = connectionManager.get('default')
-    } else {
-        connection = connectionManager.create({
+    if (!dataSource?.isInitialized) {
+        dataSource = new DataSource({
             type: "postgres",
             host: process.env.POSTGRES_HOST,
             port: Number(process.env.POSTGRES_PORT),
@@ -20,13 +17,15 @@ export const connectDatabase = async () => {
             logging: false,
             entities: [Consults, Admins],
         } as PostgresConnectionOptions);
-        await connection.connect()
-        console.log('typeorm connected')
+
+        await dataSource.initialize();
+        console.log("TypeORM connected");
     }
-}
+};
+
 export const getConnection = async () => {
-    if (!connection) {
-        throw new Error('Connection not established')
+    if (!dataSource?.isInitialized) {
+        throw new Error("DataSource not initialized");
     }
-    return connection
-}
+    return dataSource;
+};
