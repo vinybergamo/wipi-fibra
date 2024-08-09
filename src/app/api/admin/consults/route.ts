@@ -23,10 +23,16 @@ export const POST = async (req: NextRequest) => {
         return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
     }
     let consultsRepository: Repository<Consults> | null = null
+
     try {
         await connectDatabase()
-        const connection = await getConnection()
+        await getConnection()
         consultsRepository = getRepository(Consults)
+    } catch (error) {
+        console.log(error)
+        return NextResponse.json({ error, connectionError: true }, { status: 408 });
+    }
+    try {
         if (filters) {
             const consults = await consultsRepository.find({ where: { ...filters } })
             return NextResponse.json({ consults }, { status: 200 });
@@ -34,7 +40,6 @@ export const POST = async (req: NextRequest) => {
         const consults = await consultsRepository.find()
         return NextResponse.json({ consults }, { status: 200 });
     } catch (error) {
-        console.log(error)
         return NextResponse.json({ error }, { status: 400 });
     }
 

@@ -30,11 +30,15 @@ export default function Dashboard() {
     }
     const fetchConsults = async (filters?: IFilters) => {
         const res = await fetch('/api/admin/consults', { method: "POST", body: JSON.stringify({ filters }), headers: { Authorization: `Bearer ${adminToken}` } })
-        if (res.status !== 200) {
+        if (res.status === 401) {
             router.push('/admin')
             return
         }
         const con = await res.json()
+        if (res.status === 408) {
+            fetchConsults(filters)
+            return
+        }
         setConsults(con.consults)
     }
 
