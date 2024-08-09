@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectDatabase, getConnection } from "../db/connect";
-import { getRepository, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { Consults } from "@/entity/consults";
 import { validarCNPJ, validarCPF } from "@/utils/functions";
 
@@ -16,7 +16,7 @@ export const POST = async (
     try {
         await connectDatabase()
         const connection = await getConnection()
-        consultsRepository = getRepository(Consults)
+        consultsRepository = connection.getRepository(Consults)
         console.log(consultsRepository)
     } catch (error) {
         console.log(error)

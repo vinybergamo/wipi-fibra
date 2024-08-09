@@ -13,7 +13,7 @@ export const POST = async (req: NextRequest) => {
     try {
         await connectDatabase();
         const connection = await getConnection();
-        adminRepository = getRepository(Admins)
+        adminRepository = connection.getRepository(Admins)
 
         // Verifica se o usuário já existe
         const existingAdmin = await adminRepository.findOne({ where: { username: user } });

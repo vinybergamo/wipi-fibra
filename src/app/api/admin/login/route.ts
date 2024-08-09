@@ -12,7 +12,7 @@ export const POST = async (
     try {
         await connectDatabase()
         const connection = await getConnection()
-        adminRepository = getRepository(Admins)
+        adminRepository = connection.getRepository(Admins)
         const admin = await adminRepository.findOneOrFail({ where: { username: user } })
         const match = admin.verifyPassword(password)
         if (match) {

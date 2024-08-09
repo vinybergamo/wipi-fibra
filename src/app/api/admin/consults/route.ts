@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
-import { getRepository, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { Consults } from "@/entity/consults";
 import { connectDatabase, getConnection } from "../../db/connect";
 
@@ -26,8 +26,8 @@ export const POST = async (req: NextRequest) => {
 
     try {
         await connectDatabase()
-        await getConnection()
-        consultsRepository = getRepository(Consults)
+        const connection = await getConnection()
+        consultsRepository = connection.getRepository(Consults)
     } catch (error) {
         console.log(error)
         return NextResponse.json({ error, connectionError: true }, { status: 408 });

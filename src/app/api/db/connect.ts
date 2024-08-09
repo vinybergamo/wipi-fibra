@@ -28,4 +28,5 @@ export const getConnection = async () => {
     if (!connection) {
         throw new Error('Connection not established')
     }
+    return connection
 }

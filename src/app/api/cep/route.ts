@@ -1,7 +1,7 @@
 import axios from "axios";
 import { type NextRequest, NextResponse } from "next/server";
 import { connectDatabase, getConnection } from "../db/connect";
-import { getRepository, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { Consults } from "@/entity/consults";
 
 export const POST = async (
@@ -11,13 +11,15 @@ export const POST = async (
   if (!zipcode || zipcode.replace(/\D/g, '').length < 8) {
     return NextResponse.json({ error: { message: 'CEP inválido' } }, { status: 400 });
   } else {
+    let saveTracking = true
     let consultsRepository: Repository<Consults> | null = null
     try {
       await connectDatabase()
       const connection = await getConnection()
-      consultsRepository = getRepository(Consults)
+      consultsRepository = connection.getRepository(Consults)
     } catch (error) {
       console.log(error)
+      saveTracking = false
     }
     try {
 
@@ -50,7 +52,7 @@ export const POST = async (
         })
       );
 
-      if (consultsRepository !== null) {
+      if (consultsRepository !== null && saveTracking) {
         const saved = await consultsRepository.save(consultsRepository.create({
           cep: zipcode,
           founded: true
@@ -59,7 +61,7 @@ export const POST = async (
       }
       return NextResponse.json({ addresses, token: login.data.success.auth.access_token }, { status: 200 });
     } catch (err: unknown) {
-      if (consultsRepository !== null) {
+      if (consultsRepository !== null && saveTracking) {
         await consultsRepository.save(consultsRepository.create({
           cep: zipcode,
           founded: false
