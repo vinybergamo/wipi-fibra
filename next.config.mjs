@@ -11,6 +11,10 @@ const nextConfig = {
             'react-native-sqlite-storage': false,
             '@sap/hana-client': false,
         };
+        config.module.rules.push({
+            test: /typeorm\/util\/DirectoryExportedClassesLoader\.js$/,
+            loader: 'ignore-loader',
+        });
 
         // Configuração adicional se necessário
         config.module.rules.push({

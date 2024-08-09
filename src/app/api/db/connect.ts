@@ -16,7 +16,7 @@ export const connectDatabase = async () => {
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.DATABASE_NAME,
-            synchronize: true,
+            synchronize: false,
             logging: false,
             entities: [Consults, Admins],
         } as PostgresConnectionOptions);
