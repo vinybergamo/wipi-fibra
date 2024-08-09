@@ -17,9 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={popins.className+ "w-full min-h-screen flex flex-col items-center justify-between"}>
+      <body className={popins.className + "w-full min-h-screen flex flex-col items-center justify-between"}>
         {children}
-        <Footer/>
+        <Footer />
       </body>
     </html>
   );

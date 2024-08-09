@@ -4,6 +4,7 @@ import CustomInput from "@/components/customInput";
 import CustomInputRadio from "@/components/customInputRadio";
 import { primaryBtnSM, secondaryBtnSM } from "@/components/ui/buttons";
 import { useOrderStore } from "@/store/orderStore";
+import { useTokenStore } from "@/store/tokenStore";
 import { sendForm } from "@/utils/apiCalls";
 import { consultarCEP, consultarViabilidade, validarCNPJ, validarCPF } from "@/utils/functions";
 import Link from "next/link";
@@ -12,6 +13,8 @@ import { useEffect, useState } from "react";
 
 export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
     const { data, setData, errors, setError, clearError } = useOrderStore()
+    const { trackId } = useTokenStore()
+
     if (!data.viavel) {
         redirect('/')
     }
@@ -37,7 +40,7 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
         setData('cep', data.cep.replace(/\D/g, ''))
     }
     const send = async () => {
-        const res = await sendForm(data)
+        const res = await sendForm({ items: data, trackId })
         setData('personType', '')
         if (res) router.push('/obrigado')
     }
@@ -87,9 +90,11 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
 
                         <CustomInputRadio defaultValue={data.plano} label='Qual seu plano?' required handleSelect={(value: string) => { changeField(value, 'plano') }}
                             values={availablePlans.length > 0 ? availablePlans : [
+                                { value: '500 mega - R$ 269,00 por mês', label: '500 mega - R$ 99,00 por mês' },
                                 { value: '600 mega - R$ 109,00 por mês', label: '600 mega - R$ 109,00 por mês' },
                                 { value: '1 Giga - R$ 169,00 por mês', label: '1 Giga - R$ 169,00 por mês' },
-                                { value: '2 Gigas - R$ 269,00 por mês', label: '2 Gigas - R$ 269,00 por mês' }]}>
+                                { value: '2 Gigas - R$ 269,00 por mês', label: '2 Gigas - R$ 269,00 por mês' },
+                            ]}>
                         </CustomInputRadio>
                         <span className="text-xs text-start text-dark-grey-2 mt-2">*Ofertas exclusivas para pagamento online realizados até a data de vencimento via pix, débito ou crédito, através da Área do Assinante Wipi.<br />
                             Após o vencimento, será cobrado valor original de mensalidade do plano contratado.<br /><br />

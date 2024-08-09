@@ -10,7 +10,7 @@ import { useTokenStore } from "@/store/tokenStore";
 
 export default function CepInput() {
     const { data, setData, errors, setError, clearError } = useOrderStore()
-    const {setToken, token }=useTokenStore()
+    const { setToken, token, trackId, setTrack } = useTokenStore()
     const [loading, setLoading] = useState(false)
     const [multiAddr, setMultiAddr] = useState<any[]>([])
     const [selectedAdd, setSelectedAdd] = useState<string>('')
@@ -24,15 +24,18 @@ export default function CepInput() {
     }
 
     const getAddress = async (value: string) => {
-        if(loading) return
+        if (loading) return
         setLoading(true)
         const address = await consultarCEP(value.replace(/\D/g, ''))
-        if(address.error){
-            setError('cepnotfound', address.error.message==='Request failed with status code 404'?'CEP não encontrado':address.error.message)
+        if (address.error) {
+            setError('cepnotfound', address.error.message === 'Request failed with status code 404' ? 'CEP não encontrado' : address.error.message)
         }
         else {
             clearError('cepnotfound')
             setMultiAddr(address.addresses)
+            if (address.trackId) {
+                setTrack(address.trackId)
+            }
             setToken(address.token)
             if (address.addresses.length == 1) {
                 const addr = address.addresses[0]
@@ -51,9 +54,9 @@ export default function CepInput() {
     }
 
     const getViability = async () => {
-        if(loading) return
+        if (loading) return
         setLoading(true)
-        const viabilidade = await consultarViabilidade(JSON.stringify({ address: selectedAdd, number: data.numero, token }))
+        const viabilidade = await consultarViabilidade(JSON.stringify({ address: selectedAdd, number: data.numero, token, trackId }))
         if (viabilidade.availabilityDescription.startsWith('Inviável')) {
             router.push('/inviavel')
         } else {
@@ -97,8 +100,8 @@ export default function CepInput() {
                 <CustomInput errors={errors['numero']} value={data.numero} onChange={(e) => changeField(e.target.value, 'numero')} label="Agora digite o número da sua residência." placeholder="Digite aqui o número da sua residência"></CustomInput>
             }
             {errors['servidor'] && <span className="text-xs text-danger font-normal ml-3">{errors['servidor']}</span>}
-            {selectedAdd && data.numero && !errors['cepnotfound'] && <button disabled={loading} className={primaryBtn+ ' w-full'} onClick={getViability}>{loading?<Loading/>:'Consultar'}</button>}
-            {multiAddr.length == 0 && !selectedAdd && <button disabled={loading} className={primaryBtn+ ' w-full'} onClick={() => getAddress(data.cep)}>{loading?<Loading/>:'Pesquisar CEP'}</button>}
+            {selectedAdd && data.numero && !errors['cepnotfound'] && <button disabled={loading} className={primaryBtn + ' w-full'} onClick={getViability}>{loading ? <Loading /> : 'Consultar'}</button>}
+            {multiAddr.length == 0 && !selectedAdd && <button disabled={loading} className={primaryBtn + ' w-full'} onClick={() => getAddress(data.cep)}>{loading ? <Loading /> : 'Pesquisar CEP'}</button>}
         </>
     );
 }
