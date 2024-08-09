@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDatabase, getConnection } from "../../db/connect";
+import { connectDatabase } from "../../db/connect";
 import { Admins } from "@/entity/admin";
 import { Repository } from "typeorm";
 import jwt from "jsonwebtoken";
@@ -10,8 +10,7 @@ export const POST = async (
     const { user, password } = await req.json();
     let adminRepository: Repository<Admins> | null = null
     try {
-        await connectDatabase()
-        const connection = await getConnection()
+        const connection = await connectDatabase()
         adminRepository = connection.getRepository(Admins)
         const admin = await adminRepository.findOneOrFail({ where: { username: user } })
         const match = admin.verifyPassword(password)

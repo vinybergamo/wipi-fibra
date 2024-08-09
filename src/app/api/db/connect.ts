@@ -3,7 +3,7 @@ import { Consults } from "@/entity/consults"
 import { DataSource } from "typeorm";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions.js"
 
-let dataSource: DataSource;
+let dataSource: DataSource | null = null;
 export const connectDatabase = async () => {
     if (!dataSource?.isInitialized) {
         dataSource = new DataSource({
@@ -16,11 +16,16 @@ export const connectDatabase = async () => {
             synchronize: false,
             logging: false,
             entities: [Consults, Admins],
+            extra: {
+                max: 10,
+                idleTimeoutMillis: 30000,
+            },
         } as PostgresConnectionOptions);
 
         await dataSource.initialize();
         console.log("TypeORM connected");
     }
+    return dataSource
 };
 
 export const getConnection = async () => {

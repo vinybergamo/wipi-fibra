@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDatabase, getConnection } from "../db/connect";
+import { connectDatabase } from "../db/connect";
 import { Repository } from "typeorm";
 import { Consults } from "@/entity/consults";
 import { validarCNPJ, validarCPF } from "@/utils/functions";
@@ -14,8 +14,7 @@ export const POST = async (
     }
     let consultsRepository: Repository<Consults> | null = null
     try {
-        await connectDatabase()
-        const connection = await getConnection()
+        const connection = await connectDatabase()
         consultsRepository = connection.getRepository(Consults)
     } catch (error) {
         console.log(error)

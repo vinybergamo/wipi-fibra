@@ -2,7 +2,7 @@ import { Consults } from "@/entity/consults";
 import axios from "axios";
 import { type NextRequest, NextResponse } from "next/server";
 import { Repository } from "typeorm";
-import { connectDatabase, getConnection } from "../db/connect";
+import { connectDatabase } from "../db/connect";
 
 export const POST = async (
   req: NextRequest,
@@ -14,8 +14,7 @@ export const POST = async (
   } else {
     let consultsRepository: Repository<Consults> | null = null
     try {
-      await connectDatabase()
-      const connection = await getConnection()
+      const connection = await connectDatabase()
       consultsRepository = connection.getRepository(Consults)
     } catch (error) {
       console.log(error)

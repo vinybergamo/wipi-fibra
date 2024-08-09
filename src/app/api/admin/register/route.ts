@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDatabase, getConnection } from "../../db/connect";
+import { connectDatabase } from "../../db/connect";
 import { Admins } from "@/entity/admin";
 import { Repository } from "typeorm";
 
@@ -12,7 +12,7 @@ export const POST = async (req: NextRequest) => {
     }
     try {
         await connectDatabase();
-        const connection = await getConnection();
+        const connection = await connectDatabase();
         adminRepository = connection.getRepository(Admins)
 
         // Verifica se o usuário já existe

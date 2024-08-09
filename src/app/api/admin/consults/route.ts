@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
 import { Repository } from "typeorm";
 import { Consults } from "@/entity/consults";
-import { connectDatabase, getConnection } from "../../db/connect";
+import { connectDatabase } from "../../db/connect";
 
 const JWT_SECRET = process.env.SECRET_KEY || 'secret';
 
@@ -25,8 +25,7 @@ export const POST = async (req: NextRequest) => {
     let consultsRepository: Repository<Consults> | null = null
 
     try {
-        await connectDatabase()
-        const connection = await getConnection()
+        const connection = await connectDatabase()
         consultsRepository = connection.getRepository(Consults)
     } catch (error) {
         console.log(error)
