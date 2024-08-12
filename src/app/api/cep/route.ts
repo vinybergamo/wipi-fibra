@@ -52,7 +52,7 @@ export const POST = async (
           await Consult.save(consult)
           return NextResponse.json({ addresses, token: login.data.success.auth.access_token, trackId: consult.id }, { status: 200 });
         } catch (e) {
-          console.log(e)
+          return NextResponse.json({ addresses, token: login.data.success.auth.access_token, connection_error: e }, { status: 200 });
         }
       }
       return NextResponse.json({ addresses, token: login.data.success.auth.access_token }, { status: 200 });
@@ -67,7 +67,7 @@ export const POST = async (
           await Consult.save(consult)
           return NextResponse.json({ error: err }, { status: 400 });
         } catch (e) {
-          console.log(e)
+          return NextResponse.json({ error: { err, e } }, { status: 400 });
         }
       } return NextResponse.json({ error: err }, { status: 400 });
     }
