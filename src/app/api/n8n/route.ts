@@ -5,7 +5,7 @@ import ensureConnection from "@/database";
 export const POST = async (
     req: Request,
 ) => {
-    await ensureConnection()
+    const connection = await ensureConnection()
     const body = await req.json();
     const { items, trackId } = body
     if (!validarCPF(items.cpfCnpj.replace(/\D/g, '')) && !validarCNPJ(items.cpfCnpj.replace(/\D/g, ''))) {
@@ -17,7 +17,7 @@ export const POST = async (
                 method: 'POST',
                 body: JSON.stringify(items)
             })
-        if (trackId !== null) {
+        if (trackId !== null && connection) {
             await Consult.update(trackId, {
                 biBody: items,
                 submitted: true
@@ -25,7 +25,7 @@ export const POST = async (
         }
         return NextResponse.json({ message: 'success' }, { status: 200 })
     } catch (error) {
-        if (trackId !== null) {
+        if (trackId !== null && connection) {
             await Consult.update(trackId, {
                 submitted: false
             })

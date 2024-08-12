@@ -5,7 +5,7 @@ import { type NextRequest, NextResponse } from "next/server";
 export const POST = async (
   req: NextRequest,
 ) => {
-  await ensureConnection()
+  const connection = await ensureConnection()
   const body = await req.json();
   const { address, number, trackId } = body
   if (!address && !number) {
@@ -38,7 +38,7 @@ export const POST = async (
       if (!response.data.success) {
         throw new Error("Api error");
       }
-      if (trackId) {
+      if (trackId && connection) {
         await Consult.update(trackId, {
           viability: "Viável",
           address: `${address}, ${number}`
@@ -46,7 +46,7 @@ export const POST = async (
       }
       return NextResponse.json({ success: "OK", response: response.data }, { status: 200 });
     } catch (error) {
-      if (trackId) {
+      if (trackId && connection) {
         await Consult.update(trackId, {
           viability: "Inviável",
           address: `${address}, ${number}`
