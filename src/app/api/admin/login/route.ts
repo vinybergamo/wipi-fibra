@@ -1,18 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDatabase } from "../../db/connect";
-import { Admins } from "@/database/entities/admin";
+import { Admin } from "@/database/entities/admin";
 import { Repository } from "typeorm";
 import jwt from "jsonwebtoken";
+import ensureConnection from "@/database";
 
 export const POST = async (
     req: NextRequest,
 ) => {
     const { user, password } = await req.json();
-    let adminRepository: Repository<Admins> | null = null
     try {
-        const connection = await connectDatabase()
-        adminRepository = connection.getRepository(Admins)
-        const admin = await adminRepository.findOneOrFail({ where: { username: user } })
+        await ensureConnection()
+        const admin = await Admin.findOneOrFail({ where: { username: user } })
         const match = admin.verifyPassword(password)
         if (match) {
             const token = jwt.sign({ id: admin.id, username: admin.username }, process.env.SECRET_KEY || 'secret', {

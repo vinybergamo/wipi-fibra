@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
 import { Repository } from "typeorm";
-import { Consults } from "@/database/entities/consults";
-import { connectDatabase } from "../../db/connect";
+import { Consult } from "@/database/entities/consults";
+import ensureConnection from "@/database";
 
 const JWT_SECRET = process.env.SECRET_KEY || 'secret';
 
@@ -22,21 +22,14 @@ export const POST = async (req: NextRequest) => {
     } catch (error) {
         return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
     }
-    let consultsRepository: Repository<Consults> | null = null
 
     try {
-        const connection = await connectDatabase()
-        consultsRepository = connection.getRepository(Consults)
-    } catch (error) {
-        console.log(error)
-        return NextResponse.json({ error, connectionError: true }, { status: 408 });
-    }
-    try {
+        await ensureConnection()
         if (filters) {
-            const consults = await consultsRepository.find({ where: { ...filters } })
+            const consults = await Consult.find({ where: { ...filters } })
             return NextResponse.json({ consults }, { status: 200 });
         }
-        const consults = await consultsRepository.find()
+        const consults = await Consult.find()
         return NextResponse.json({ consults }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error }, { status: 400 });
