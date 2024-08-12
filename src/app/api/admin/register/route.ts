@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDatabase } from "../../db/connect";
-import { Admins } from "@/entity/admin";
+import { Admins } from "@/database/entities/admin";
 import { Repository } from "typeorm";
 
 export const POST = async (req: NextRequest) => {

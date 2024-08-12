@@ -1,25 +1,18 @@
 import axios from "axios";
 import { type NextRequest, NextResponse } from "next/server";
-import { connectDatabase } from "../db/connect";
-import { Repository } from "typeorm";
-import { Consults } from "@/entity/consults";
+import { Consult } from "@/database/entities/consults";
+import ensureConnection from "@/database";
+
+
 
 export const POST = async (
   req: NextRequest,
 ) => {
+  await ensureConnection()
   const { zipcode } = await req.json();
   if (!zipcode || zipcode.replace(/\D/g, '').length < 8) {
     return NextResponse.json({ error: { message: 'CEP inválido' } }, { status: 400 });
   } else {
-    let saveTracking = true
-    let consultsRepository: Repository<Consults> | null = null
-    try {
-      const connection = await connectDatabase()
-      consultsRepository = connection.getRepository(Consults)
-    } catch (error) {
-      console.log(error)
-      saveTracking = false
-    }
     try {
 
       const login = await axios.post(
@@ -50,21 +43,28 @@ export const POST = async (
           [`description${index + 1}`]: addr.description,
         })
       );
-
-      if (consultsRepository !== null && saveTracking) {
-        const saved = await consultsRepository.save(consultsRepository.create({
+      try {
+        const consult = Consult.create({
           cep: zipcode,
           founded: true
-        }))
-        return NextResponse.json({ addresses, token: login.data.success.auth.access_token, trackId: saved.id }, { status: 200 });
+        })
+        await Consult.save(consult)
+        return NextResponse.json({ addresses, token: login.data.success.auth.access_token, trackId: consult.id }, { status: 200 });
+      } catch (e) {
+        console.log(e)
       }
       return NextResponse.json({ addresses, token: login.data.success.auth.access_token }, { status: 200 });
+
     } catch (err: unknown) {
-      if (consultsRepository !== null && saveTracking) {
-        await consultsRepository.save(consultsRepository.create({
+      try {
+        const consult = Consult.create({
           cep: zipcode,
           founded: false
-        }))
+        })
+        await Consult.save(consult)
+        return NextResponse.json({ error: err }, { status: 400 });
+      } catch (e) {
+        console.log(e)
       }
       return NextResponse.json({ error: err }, { status: 400 });
     }

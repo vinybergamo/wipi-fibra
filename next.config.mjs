@@ -1,33 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    webpack: (config) => {
-        // Configuração para ignorar módulos não utilizados
-        config.resolve.alias = {
-            ...config.resolve.alias,
-            'react-native$': 'react-native-web', // Substitua react-native por react-native-web
-            // Não ignore o 'pg' se você está usando o TypeORM com PostgreSQL
-            // Remova as seguintes linhas se estiver usando TypeORM com PostgreSQL
-            'mysql': false,
-            'react-native-sqlite-storage': false,
-            '@sap/hana-client': false,
-        };
+    webpack: (config, { isServer }) => {
+        if (isServer) {
+            config.externals.push({ typeorm: 'commonjs typeorm' });
+        }
 
-        // Configuração adicional se necessário
         config.module.rules.push({
-            test: /\.js$/,
-            exclude: /node_modules/,
+            test: /typeorm\/.*\.js$/,
             use: {
                 loader: 'babel-loader',
                 options: {
                     presets: ['next/babel'],
+                    plugins: ['babel-plugin-dynamic-import-node'],
                 },
             },
         });
 
+
         return config;
     },
-
-
 };
 
 export default nextConfig;

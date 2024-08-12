@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
 import { Repository } from "typeorm";
-import { Consults } from "@/entity/consults";
+import { Consults } from "@/database/entities/consults";
 import { connectDatabase } from "../../db/connect";
 
 const JWT_SECRET = process.env.SECRET_KEY || 'secret';

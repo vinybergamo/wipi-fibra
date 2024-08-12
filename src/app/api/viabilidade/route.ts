@@ -1,24 +1,16 @@
-import { Consults } from "@/entity/consults";
+import ensureConnection from "@/database";
+import { Consult } from "@/database/entities/consults";
 import axios from "axios";
 import { type NextRequest, NextResponse } from "next/server";
-import { Repository } from "typeorm";
-import { connectDatabase } from "../db/connect";
-
 export const POST = async (
   req: NextRequest,
 ) => {
+  await ensureConnection()
   const body = await req.json();
   const { address, number, trackId } = body
   if (!address && !number) {
     return NextResponse.json({ error: "Invalid address" }, { status: 400 });
   } else {
-    let consultsRepository: Repository<Consults> | null = null
-    try {
-      const connection = await connectDatabase()
-      consultsRepository = connection.getRepository(Consults)
-    } catch (error) {
-      console.log(error)
-    }
     try {
       let token = body.token
       if (!body.token) {
@@ -46,16 +38,18 @@ export const POST = async (
       if (!response.data.success) {
         throw new Error("Api error");
       }
-      if (trackId && consultsRepository !== null) {
-        await consultsRepository.update(trackId, {
-          viability: "Viável"
+      if (trackId) {
+        await Consult.update(trackId, {
+          viability: "Viável",
+          address: `${address}, ${number}`
         })
       }
       return NextResponse.json({ success: "OK", response: response.data }, { status: 200 });
     } catch (error) {
-      if (trackId && consultsRepository !== null) {
-        await consultsRepository?.update(trackId, {
-          viability: "Inviável"
+      if (trackId) {
+        await Consult.update(trackId, {
+          viability: "Inviável",
+          address: `${address}, ${number}`
         })
       }
       return NextResponse.json({ error }, { status: 400 });

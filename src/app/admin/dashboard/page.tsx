@@ -1,7 +1,7 @@
 'use client'
 
 import { IFilters } from "@/app/api/admin/consults/route"
-import { Consults } from "@/entity/consults"
+import { Consults } from "@/database/entities/consults"
 import { useTokenStore } from "@/store/tokenStore"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"

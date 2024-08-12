@@ -1,23 +1,15 @@
 import { NextResponse } from "next/server";
-import { connectDatabase } from "../db/connect";
-import { Repository } from "typeorm";
-import { Consults } from "@/entity/consults";
+import { Consult } from "@/database/entities/consults";
 import { validarCNPJ, validarCPF } from "@/utils/functions";
-
+import ensureConnection from "@/database";
 export const POST = async (
     req: Request,
 ) => {
+    await ensureConnection()
     const body = await req.json();
     const { items, trackId } = body
     if (!validarCPF(items.cpfCnpj.replace(/\D/g, '')) && !validarCNPJ(items.cpfCnpj.replace(/\D/g, ''))) {
         return NextResponse.json({ message: 'error, document invalid' }, { status: 401 })
-    }
-    let consultsRepository: Repository<Consults> | null = null
-    try {
-        const connection = await connectDatabase()
-        consultsRepository = connection.getRepository(Consults)
-    } catch (error) {
-        console.log(error)
     }
     try {
         await fetch(process.env.N8N_URL || '',
@@ -25,16 +17,16 @@ export const POST = async (
                 method: 'POST',
                 body: JSON.stringify(items)
             })
-        if (trackId !== null && consultsRepository !== null) {
-            await consultsRepository.update(trackId, {
+        if (trackId !== null) {
+            await Consult.update(trackId, {
                 biBody: items,
                 submitted: true
             })
         }
         return NextResponse.json({ message: 'success' }, { status: 200 })
     } catch (error) {
-        if (trackId !== null && consultsRepository !== null) {
-            await consultsRepository.update(trackId, {
+        if (trackId !== null) {
+            await Consult.update(trackId, {
                 submitted: false
             })
         }
