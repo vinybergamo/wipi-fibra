@@ -5,7 +5,7 @@ import { type NextRequest, NextResponse } from "next/server";
 export const POST = async (
   req: NextRequest,
 ) => {
-  const connection = await ensureConnection()
+  // const connection = await ensureConnection()
   const body = await req.json();
   const { address, number, trackId } = body
   if (!address && !number) {
@@ -38,20 +38,20 @@ export const POST = async (
       if (!response.data.success) {
         throw new Error("Api error");
       }
-      if (trackId && connection) {
-        await Consult.update(trackId, {
-          viability: "Viável",
-          address: `${address}, ${number}`
-        })
-      }
+      // if (trackId && connection) {
+      //   await Consult.update(trackId, {
+      //     viability: "Viável",
+      //     address: `${address}, ${number}`
+      //   })
+      // }
       return NextResponse.json({ success: "OK", response: response.data }, { status: 200 });
     } catch (error) {
-      if (trackId && connection) {
-        await Consult.update(trackId, {
-          viability: "Inviável",
-          address: `${address}, ${number}`
-        })
-      }
+      // if (trackId && connection) {
+      //   await Consult.update(trackId, {
+      //     viability: "Inviável",
+      //     address: `${address}, ${number}`
+      //   })
+      // }
       return NextResponse.json({ error }, { status: 400 });
     }
   }
