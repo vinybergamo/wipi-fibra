@@ -23,7 +23,7 @@ export const POST = async (
         }
       );
       if (!login.data.success) {
-        throw new Error("Api error");
+        return NextResponse.json({ error: 'API Error' }, { status: 400 });
       }
 
       const response = await axios.get(
@@ -35,7 +35,7 @@ export const POST = async (
         }
       );
       if (!response.data.success) {
-        throw new Error("Api error");
+        return NextResponse.json({ error: 'API Error' }, { status: 400 });
       }
 
       const addresses = response.data.success.address.map(
