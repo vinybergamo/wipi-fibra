@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Admin } from "@/database/entities/admin";
-import { Repository } from "typeorm";
 import jwt from "jsonwebtoken";
 import ensureConnection from "@/database";
 

@@ -1,13 +1,13 @@
 'use client'
 
 import { IFilters } from "@/app/api/admin/consults/route"
-import { Consults } from "@/database/entities/consults"
+import { Consult } from "@/database/entities/consults"
 import { useTokenStore } from "@/store/tokenStore"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function Dashboard() {
-    const [consults, setConsults] = useState<Consults[]>([])
+    const [consults, setConsults] = useState<Consult[]>([])
     const [founded, setFounded] = useState('todos')
     const [viability, setViability] = useState('todos')
     const [submitted, setSubmitted] = useState('todos')

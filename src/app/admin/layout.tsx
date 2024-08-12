@@ -1,7 +1,6 @@
 'use client'
 
 import { useTokenStore } from "@/store/tokenStore";
-import { checkAdminToken } from "@/utils/checkAdmin";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
