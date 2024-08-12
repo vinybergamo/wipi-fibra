@@ -72,6 +72,7 @@ export default function Dashboard() {
                 {consults.map((i, k) => (
                     <div key={k} className="w-full flex items-center justify-around py-2 border-b-2 border-grey">
                         <p>CEP: {i.cep}</p>
+                        <p>Endereço: {i.address || 'Vazio'}</p>
                         <p>Encontrado: {i.founded ? "sim" : "não"}</p>
                         <p>Viabilidade: {i.viability ? i.viability : "Vazio"}</p>
                         <p>Enviado: {i.submitted ? "sim" : "não"}</p>
