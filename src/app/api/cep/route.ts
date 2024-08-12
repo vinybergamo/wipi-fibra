@@ -1,14 +1,14 @@
 import axios from "axios";
 import { type NextRequest, NextResponse } from "next/server";
-import { Consult } from "@/database/entities/consults";
-import ensureConnection from "@/database";
+// import { Consult } from "@/database/entities/consults";
+// import ensureConnection from "@/database";
 
 
 
 export const POST = async (
   req: NextRequest,
 ) => {
-  const connection = await ensureConnection()
+  // const connection = await ensureConnection()
   const { zipcode } = await req.json();
   if (!zipcode || zipcode.replace(/\D/g, '').length < 8) {
     return NextResponse.json({ error: { message: 'CEP inválido' } }, { status: 400 });
@@ -43,33 +43,34 @@ export const POST = async (
           [`description${index + 1}`]: addr.description,
         })
       );
-      if (connection) {
-        try {
-          const consult = Consult.create({
-            cep: zipcode,
-            founded: true
-          })
-          await Consult.save(consult)
-          return NextResponse.json({ addresses, token: login.data.success.auth.access_token, trackId: consult.id }, { status: 200 });
-        } catch (e) {
-          return NextResponse.json({ addresses, token: login.data.success.auth.access_token, connection_error: e }, { status: 200 });
-        }
-      }
+      // if (connection) {
+      //   try {
+      //     const consult = Consult.create({
+      //       cep: zipcode,
+      //       founded: true
+      //     })
+      //     await Consult.save(consult)
+      //     return NextResponse.json({ addresses, token: login.data.success.auth.access_token, trackId: consult.id }, { status: 200 });
+      //   } catch (e) {
+      //     return NextResponse.json({ addresses, token: login.data.success.auth.access_token, connection_error: e }, { status: 200 });
+      //   }
+      // }
       return NextResponse.json({ addresses, token: login.data.success.auth.access_token }, { status: 200 });
 
     } catch (err: unknown) {
-      if (connection) {
-        try {
-          const consult = Consult.create({
-            cep: zipcode,
-            founded: false
-          })
-          await Consult.save(consult)
-          return NextResponse.json({ error: err }, { status: 400 });
-        } catch (e) {
-          return NextResponse.json({ error: { err, e } }, { status: 400 });
-        }
-      } return NextResponse.json({ error: err }, { status: 400 });
+      // if (connection) {
+      //   try {
+      //     const consult = Consult.create({
+      //       cep: zipcode,
+      //       founded: false
+      //     })
+      //     await Consult.save(consult)
+      //     return NextResponse.json({ error: err }, { status: 400 });
+      //   } catch (e) {
+      //     return NextResponse.json({ error: { err, e } }, { status: 400 });
+      //   }
+      // } 
+      return NextResponse.json({ error: err }, { status: 400 });
     }
   }
 }
