@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, BeforeUpdate, BeforeInsert } from "typeorm";
 import { genSaltSync, hashSync, compareSync } from 'bcrypt';
 
