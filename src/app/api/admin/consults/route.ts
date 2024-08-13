@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
-import { Consult } from "@/database/entities/consults";
-import ensureConnection from "@/database";
+import { Consult } from "../../../../database/entities/consults";
+import AppDataSource from "../../../../database";
 
 const JWT_SECRET = process.env.SECRET_KEY || 'secret';
 
@@ -23,12 +23,15 @@ export const POST = async (req: NextRequest) => {
     }
 
     try {
-        await ensureConnection()
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize()
+        }
+        const repository = AppDataSource.getRepository(Consult)
         if (filters) {
-            const consults = await Consult.find({ where: { ...filters } })
+            const consults = await repository.find({ where: { ...filters } })
             return NextResponse.json({ consults }, { status: 200 });
         }
-        const consults = await Consult.find()
+        const consults = await repository.find()
         return NextResponse.json({ consults }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error }, { status: 400 });

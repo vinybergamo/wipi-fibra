@@ -12,7 +12,7 @@ const AppDataSource = new DataSource({
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.DATABASE_NAME,
     synchronize: process.env.NODE_ENV !== "production",
-    logging: true,
+    logging: false,
     entities: [Consult, Admin],
     schema: 'public',
 })

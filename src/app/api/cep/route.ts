@@ -1,11 +1,7 @@
-import AppDataSource from "@/database";
-import { Consult } from "@/database/entities/consults";
+import AppDataSource from "../../../database";
+import { Consult } from "../../../database/entities/consults";
 import axios from "axios";
 import { type NextRequest, NextResponse } from "next/server";
-// import { Consult } from "@/database/entities/consults";
-// import ensureConnection from "@/database";
-
-
 
 export const POST = async (
   req: NextRequest,
@@ -65,8 +61,10 @@ export const POST = async (
       }
       return NextResponse.json({ addresses, token: login.data.success.auth.access_token }, { status: 200 });
     } catch (err: unknown) {
-      // if (connection) {
       try {
+        if (!AppDataSource.isInitialized) {
+          await AppDataSource.initialize()
+        }
         const repository = AppDataSource.getRepository(Consult)
         const consult = repository.create({
           cep: zipcode,
@@ -77,8 +75,6 @@ export const POST = async (
       } catch (e) {
         return NextResponse.json({ error: err, e }, { status: 400 });
       }
-      // } 
-      return NextResponse.json({ error: err }, { status: 400 });
     }
   }
 }

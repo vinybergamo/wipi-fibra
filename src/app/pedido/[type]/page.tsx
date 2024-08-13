@@ -6,7 +6,7 @@ import { primaryBtnSM, secondaryBtnSM } from "@/components/ui/buttons";
 import { useOrderStore } from "@/store/orderStore";
 import { useTokenStore } from "@/store/tokenStore";
 import { sendForm } from "@/utils/apiCalls";
-import { consultarCEP, consultarViabilidade, validarCNPJ, validarCPF } from "@/utils/functions";
+import { validarCNPJ, validarCPF } from "@/utils/functions";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

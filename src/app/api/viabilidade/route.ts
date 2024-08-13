@@ -1,5 +1,5 @@
-import ensureConnection from "@/database";
-import { Consult } from "@/database/entities/consults";
+import AppDataSource from "../../../database";
+import { Consult } from "../../../database/entities/consults";
 import axios from "axios";
 import { type NextRequest, NextResponse } from "next/server";
 export const POST = async (
@@ -38,20 +38,33 @@ export const POST = async (
       if (!response.data.success) {
         throw new Error("Api error");
       }
-      // if (trackId && connection) {
-      //   await Consult.update(trackId, {
-      //     viability: "Viável",
-      //     address: `${address}, ${number}`
-      //   })
-      // }
-      return NextResponse.json({ success: "OK", response: response.data }, { status: 200 });
+      if (!AppDataSource.isInitialized) {
+        await AppDataSource.initialize()
+      }
+
+      if (trackId && AppDataSource.isInitialized) {
+        const repository = AppDataSource.getRepository(Consult)
+        await repository.update(trackId, {
+          viability: "Viável",
+          address: `${address}, ${number}`
+        })
+      }
+      return NextResponse.json({ success: "OK", response: response.data, trackId }, { status: 200 });
     } catch (error) {
-      // if (trackId && connection) {
-      //   await Consult.update(trackId, {
-      //     viability: "Inviável",
-      //     address: `${address}, ${number}`
-      //   })
-      // }
+      try {
+        if (!AppDataSource.isInitialized) {
+          await AppDataSource.initialize()
+        }
+        if (trackId && AppDataSource.isInitialized) {
+          const repository = AppDataSource.getRepository(Consult)
+          await repository.update(trackId, {
+            viability: "Inviável",
+            address: `${address}, ${number}`
+          })
+        }
+      } catch (error) {
+        return NextResponse.json({ error }, { status: 400 });
+      }
       return NextResponse.json({ error }, { status: 400 });
     }
   }

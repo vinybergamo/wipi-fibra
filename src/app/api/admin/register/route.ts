@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Admin } from "@/database/entities/admin";
-import ensureConnection from "@/database";
+import { Admin } from "../../../../database/entities/admin";
+import AppDataSource from "../../../../database";
 
 export const POST = async (req: NextRequest) => {
     const { user, password } = await req.json();
@@ -9,8 +9,11 @@ export const POST = async (req: NextRequest) => {
         return NextResponse.json({ message: 'invalid API key' }, { status: 400 });
     }
     try {
-        await ensureConnection()
-        const existingAdmin = await Admin.findOne({ where: { username: user } });
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize()
+        }
+        const repository = AppDataSource.getRepository(Admin)
+        const existingAdmin = await repository.findOne({ where: { username: user } });
         if (existingAdmin) {
             return NextResponse.json({ message: "Admin already exists" }, { status: 400 });
         }
@@ -18,9 +21,7 @@ export const POST = async (req: NextRequest) => {
         const newAdmin = new Admin();
         newAdmin.username = user;
         newAdmin.password = password;
-        console.log(newAdmin)
-        await Admin.save(newAdmin);
-
+        await repository.save(newAdmin);
         return NextResponse.json({ message: "Admin created successfully" }, { status: 201 });
     } catch (error) {
         console.error(error);
