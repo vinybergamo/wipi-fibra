@@ -12,6 +12,13 @@ export const POST = async (
     return NextResponse.json({ error: { message: 'CEP inválido' } }, { status: 400 });
   } else {
     try {
+      if (!AppDataSource.isInitialized) {
+        await AppDataSource.initialize()
+      }
+    } catch (err) {
+      console.log(err)
+    }
+    try {
 
       const login = await axios.post(
         "https://api.wipi.com.br/public/api/integracao/login",
@@ -41,11 +48,7 @@ export const POST = async (
           [`description${index + 1}`]: addr.description,
         })
       );
-      console.log(AppDataSource.isInitialized)
-      if (!AppDataSource.isInitialized) {
-        await AppDataSource.initialize()
-      }
-      console.log(AppDataSource.isInitialized)
+
       if (AppDataSource.isInitialized) {
         try {
           const repository = AppDataSource.getRepository(Consult)

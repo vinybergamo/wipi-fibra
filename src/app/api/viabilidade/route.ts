@@ -12,6 +12,13 @@ export const POST = async (
     return NextResponse.json({ error: "Invalid address" }, { status: 400 });
   } else {
     try {
+      if (!AppDataSource.isInitialized) {
+        await AppDataSource.initialize()
+      }
+    } catch (err) {
+      console.log(err)
+    }
+    try {
       let token = body.token
       if (!body.token) {
         const login = await axios.post(
@@ -38,10 +45,6 @@ export const POST = async (
       if (!response.data.success) {
         throw new Error("Api error");
       }
-      if (!AppDataSource.isInitialized) {
-        await AppDataSource.initialize()
-      }
-
       if (trackId && AppDataSource.isInitialized) {
         const repository = AppDataSource.getRepository(Consult)
         await repository.update(trackId, {

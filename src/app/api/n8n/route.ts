@@ -11,14 +11,18 @@ export const POST = async (
         return NextResponse.json({ message: 'error, document invalid' }, { status: 401 })
     }
     try {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize()
+        }
+    } catch (err) {
+        console.log(err)
+    }
+    try {
         await fetch(process.env.N8N_URL || '',
             {
                 method: 'POST',
                 body: JSON.stringify(items)
             })
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize()
-        }
         if (trackId !== null && AppDataSource.isInitialized) {
             const repository = AppDataSource.getRepository(Consult)
             await repository.update(trackId, {
