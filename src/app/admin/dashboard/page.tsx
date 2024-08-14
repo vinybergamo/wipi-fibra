@@ -78,7 +78,7 @@ export default function Dashboard() {
                 {consults.map((i, k) => (
                     <div key={k} className="w-full flex items-center justify-around py-2 border-b-2 border-grey flex-wrap">
                         <p className="text-center text-wrap lg:w-1/5 w-1/3 lg:block hidden">{i.cep}</p>
-                        <p className="text-center text-wrap lg:w-1/5 w-1/3 ">{i.address || 'Vazio'}</p>
+                        <p className="text-center text-wrap lg:w-1/5 w-1/3 ">{i.address || `Vazio - ${i.cep}`}</p>
                         <p className="text-center text-wrap lg:w-1/5 w-1/3">{i.founded ? "sim" : "não"}</p>
                         <p className="text-center text-wrap lg:w-1/5 w-1/3">{i.viability ? i.viability : "Vazio"}</p>
                         <p className="text-center text-wrap lg:w-1/5 w-1/3 lg:block hidden">{i.submitted ? "sim" : "não"}</p>
