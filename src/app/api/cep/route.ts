@@ -52,15 +52,12 @@ export const POST = async (
       }
     } catch (err: unknown) {
       try {
-        // if (!AppDataSource.isInitialized) {
-        //   await AppDataSource.initialize()
-        // }
-        // const repository = AppDataSource.getRepository(Consult)
-        // const consult = repository.create({
-        //   cep: zipcode,
-        //   founded: false
-        // })
-        // await repository.save(consult)
+        await prisma.consult.create({
+          data: {
+            cep: zipcode,
+            founded: false
+          }
+        })
         return NextResponse.json({ error: err }, { status: 400 });
       } catch (e) {
         return NextResponse.json({ error: err, e }, { status: 400 });
