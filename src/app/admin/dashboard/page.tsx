@@ -57,7 +57,7 @@ export default function Dashboard() {
             <header className="w-full flex items-center justify-between p-10"><button className="bg-danger text-white rounded-full py-3 px-5" onClick={logout}>Sair</button>
                 <h1 className="w-full text-center font-bold text-4xl">Consultas</h1>
             </header>
-            <div className="w-full flex items-center justify-around mb-3 pb-3 border-b-2 border-grey">
+            <div className="w-full flex flex-wrap items-center justify-around mb-3 pb-3 border-b-2 border-grey gap-2">
                 <button className="px-4 py-3 rounded-xl bg-dark-grey-2 text-white" onClick={() => changeFilter('founded')}>Encontrados: {founded}</button>
                 <button className="px-4 py-3 rounded-xl bg-dark-grey-2 text-white" onClick={() => changeFilter('viability')}>Viável: {viability}</button>
                 <button className="px-4 py-3 rounded-xl bg-dark-grey-2 text-white" onClick={() => changeFilter('submitted')}>Enviados: {submitted}</button>
@@ -67,21 +67,21 @@ export default function Dashboard() {
                     submitted: submitted == 'todos' ? undefined : submitted == 'sim'
                 })}>Filtrar</button>
             </div>
-            <div className="w-full flex items-center justify-around py-2 border-b-2 border-grey">
-                <p className="text-center text-wrap w-1/5 font-semibold">CEP</p>
-                <p className="text-center text-wrap w-1/5 font-semibold ">Endereço</p>
-                <p className="text-center text-wrap w-1/5 font-semibold">Encontrado</p>
-                <p className="text-center text-wrap w-1/5 font-semibold">Viabilidade</p>
-                <p className="text-center text-wrap w-1/5 font-semibold">Enviado</p>
+            <div className="w-full flex items-center justify-around py-2 border-b-2 border-grey flex-wrap">
+                <p className="text-center text-wrap lg:w-1/5 w-1/3 font-semibold lg:block hidden">CEP</p>
+                <p className="text-center text-wrap lg:w-1/5 w-1/3 font-semibold ">Endereço</p>
+                <p className="text-center text-wrap lg:w-1/5 w-1/3 font-semibold">Encontrado</p>
+                <p className="text-center text-wrap lg:w-1/5 w-1/3 font-semibold">Viabilidade</p>
+                <p className="text-center text-wrap lg:w-1/5 w-1/3 font-semibold lg:block hidden">Enviado</p>
             </div>
             <div className="w-full flex flex-col">
                 {consults.map((i, k) => (
-                    <div key={k} className="w-full flex items-center justify-around py-2 border-b-2 border-grey">
-                        <p className="text-center text-wrap w-1/5">{i.cep}</p>
-                        <p className="text-center text-wrap w-1/5 ">{i.address || 'Vazio'}</p>
-                        <p className="text-center text-wrap w-1/5">{i.founded ? "sim" : "não"}</p>
-                        <p className="text-center text-wrap w-1/5">{i.viability ? i.viability : "Vazio"}</p>
-                        <p className="text-center text-wrap w-1/5">{i.submitted ? "sim" : "não"}</p>
+                    <div key={k} className="w-full flex items-center justify-around py-2 border-b-2 border-grey flex-wrap">
+                        <p className="text-center text-wrap lg:w-1/5 w-1/3 lg:block hidden">{i.cep}</p>
+                        <p className="text-center text-wrap lg:w-1/5 w-1/3 ">{i.address || 'Vazio'}</p>
+                        <p className="text-center text-wrap lg:w-1/5 w-1/3">{i.founded ? "sim" : "não"}</p>
+                        <p className="text-center text-wrap lg:w-1/5 w-1/3">{i.viability ? i.viability : "Vazio"}</p>
+                        <p className="text-center text-wrap lg:w-1/5 w-1/3 lg:block hidden">{i.submitted ? "sim" : "não"}</p>
                     </div>
                 ))}
             </div>
