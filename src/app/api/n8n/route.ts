@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { Consult } from "../../../database/entities/consults";
 import { validarCNPJ, validarCPF } from "@/utils/functions";
-import AppDataSource from "../../../database";
+import { prisma } from "../../../../prisma";
 export const POST = async (
     req: Request,
 ) => {
@@ -11,24 +10,22 @@ export const POST = async (
         return NextResponse.json({ message: 'error, document invalid' }, { status: 401 })
     }
     try {
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize()
-        }
-    } catch (err) {
-        console.log(err)
-    }
-    try {
         await fetch(process.env.N8N_URL || '',
             {
                 method: 'POST',
                 body: JSON.stringify(items)
             })
-        if (trackId !== null && AppDataSource.isInitialized) {
-            const repository = AppDataSource.getRepository(Consult)
-            await repository.update(trackId, {
-                biBody: items,
-                submitted: true
-            })
+        try {
+            if (trackId !== null) {
+                await prisma.consult.update({
+                    where: { id: trackId }, data: {
+                        biBody: items,
+                        submitted: true
+                    }
+                })
+            }
+        } catch (e) {
+            console.log(e)
         }
         return NextResponse.json({ message: 'success' }, { status: 200 })
     } catch (error) {

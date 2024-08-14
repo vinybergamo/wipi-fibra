@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Admin } from "../../../../database/entities/admin";
 import jwt from "jsonwebtoken";
-import AppDataSource from "../../../../database";
+import { prisma } from "../../../../../prisma";
+import { compareSync } from "bcrypt";
 
 export const POST = async (
     req: NextRequest,
 ) => {
     const { user, password } = await req.json();
+    function VerifyPassword(userPass: string) {
+        return compareSync(password, userPass);
+    }
     try {
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize()
-        }
-        const repository = AppDataSource.getRepository(Admin)
-        const admin = await repository.findOneOrFail({ where: { username: user } })
-        const match = admin.verifyPassword(password)
-        if (match) {
+        const admin = await prisma.admin.findUnique({ where: { username: user } })
+
+        const match = VerifyPassword(admin?.password || '')
+        if (match && admin) {
             const token = jwt.sign({ id: admin.id, username: admin.username }, process.env.SECRET_KEY || 'secret', {
                 expiresIn: '1d'
             });

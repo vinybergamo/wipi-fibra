@@ -1,7 +1,6 @@
-import AppDataSource from "../../../database";
-import { Consult } from "../../../database/entities/consults";
 import axios from "axios";
 import { type NextRequest, NextResponse } from "next/server";
+import { prisma } from "../../../../prisma";
 
 export const POST = async (
   req: NextRequest,
@@ -12,14 +11,6 @@ export const POST = async (
     return NextResponse.json({ error: { message: 'CEP inválido' } }, { status: 400 });
   } else {
     try {
-      if (!AppDataSource.isInitialized) {
-        await AppDataSource.initialize()
-      }
-    } catch (err) {
-      console.log(err)
-    }
-    try {
-
       const login = await axios.post(
         "https://api.wipi.com.br/public/api/integracao/login",
         {
@@ -48,32 +39,28 @@ export const POST = async (
           [`description${index + 1}`]: addr.description,
         })
       );
-
-      if (AppDataSource.isInitialized) {
-        try {
-          const repository = AppDataSource.getRepository(Consult)
-          const consult = repository.create({
+      try {
+        const consult = await prisma.consult.create({
+          data: {
             cep: zipcode,
             founded: true
-          })
-          await repository.save(consult)
-          return NextResponse.json({ addresses, token: login.data.success.auth.access_token, trackId: consult.id }, { status: 200 });
-        } catch (e) {
-          return NextResponse.json({ addresses, token: login.data.success.auth.access_token, connection_error: e }, { status: 200 });
-        }
+          }
+        })
+        return NextResponse.json({ addresses, token: login.data.success.auth.access_token, trackId: consult.id }, { status: 200 });
+      } catch (e) {
+        return NextResponse.json({ addresses, token: login.data.success.auth.access_token, connection_error: e }, { status: 200 });
       }
-      return NextResponse.json({ addresses, token: login.data.success.auth.access_token }, { status: 200 });
     } catch (err: unknown) {
       try {
-        if (!AppDataSource.isInitialized) {
-          await AppDataSource.initialize()
-        }
-        const repository = AppDataSource.getRepository(Consult)
-        const consult = repository.create({
-          cep: zipcode,
-          founded: false
-        })
-        await repository.save(consult)
+        // if (!AppDataSource.isInitialized) {
+        //   await AppDataSource.initialize()
+        // }
+        // const repository = AppDataSource.getRepository(Consult)
+        // const consult = repository.create({
+        //   cep: zipcode,
+        //   founded: false
+        // })
+        // await repository.save(consult)
         return NextResponse.json({ error: err }, { status: 400 });
       } catch (e) {
         return NextResponse.json({ error: err, e }, { status: 400 });

@@ -1,13 +1,12 @@
 'use client'
 
 import { IFilters } from "@/app/api/admin/consults/route"
-import { Consult } from "@/database/entities/consults"
 import { useTokenStore } from "@/store/tokenStore"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function Dashboard() {
-    const [consults, setConsults] = useState<Consult[]>([])
+    const [consults, setConsults] = useState<any[]>([])
     const [founded, setFounded] = useState('todos')
     const [viability, setViability] = useState('todos')
     const [submitted, setSubmitted] = useState('todos')
@@ -56,26 +55,33 @@ export default function Dashboard() {
     return (
         <>
             <header className="w-full flex items-center justify-between p-10"><button className="bg-danger text-white rounded-full py-3 px-5" onClick={logout}>Sair</button>
-                <h1 className="w-full text-center">Consultas</h1>
+                <h1 className="w-full text-center font-bold text-4xl">Consultas</h1>
             </header>
             <div className="w-full flex items-center justify-around mb-3 pb-3 border-b-2 border-grey">
-                <button className="px-4 py-3 rounded-xl bg-ascents text-white" onClick={() => changeFilter('founded')}>Encontrados: {founded}</button>
-                <button className="px-4 py-3 rounded-xl bg-ascents text-white" onClick={() => changeFilter('viability')}>Viável: {viability}</button>
-                <button className="px-4 py-3 rounded-xl bg-ascents text-white" onClick={() => changeFilter('submitted')}>Enviados: {submitted}</button>
-                <button className="px-4 py-3 rounded-xl bg-danger text-white" onClick={() => fetchConsults({
+                <button className="px-4 py-3 rounded-xl bg-dark-grey-2 text-white" onClick={() => changeFilter('founded')}>Encontrados: {founded}</button>
+                <button className="px-4 py-3 rounded-xl bg-dark-grey-2 text-white" onClick={() => changeFilter('viability')}>Viável: {viability}</button>
+                <button className="px-4 py-3 rounded-xl bg-dark-grey-2 text-white" onClick={() => changeFilter('submitted')}>Enviados: {submitted}</button>
+                <button className="px-4 py-3 rounded-xl bg-ascents text-white" onClick={() => fetchConsults({
                     founded: founded == 'todos' ? undefined : founded == 'sim',
                     viability: viability == 'todos' ? undefined : viability == 'sim' ? "Viável" : "Inviável",
                     submitted: submitted == 'todos' ? undefined : submitted == 'sim'
                 })}>Filtrar</button>
             </div>
+            <div className="w-full flex items-center justify-around py-2 border-b-2 border-grey">
+                <p className="text-center text-wrap w-1/5 font-semibold">CEP</p>
+                <p className="text-center text-wrap w-1/5 font-semibold ">Endereço</p>
+                <p className="text-center text-wrap w-1/5 font-semibold">Encontrado</p>
+                <p className="text-center text-wrap w-1/5 font-semibold">Viabilidade</p>
+                <p className="text-center text-wrap w-1/5 font-semibold">Enviado</p>
+            </div>
             <div className="w-full flex flex-col">
                 {consults.map((i, k) => (
                     <div key={k} className="w-full flex items-center justify-around py-2 border-b-2 border-grey">
-                        <p>CEP: {i.cep}</p>
-                        <p>Endereço: {i.address || 'Vazio'}</p>
-                        <p>Encontrado: {i.founded ? "sim" : "não"}</p>
-                        <p>Viabilidade: {i.viability ? i.viability : "Vazio"}</p>
-                        <p>Enviado: {i.submitted ? "sim" : "não"}</p>
+                        <p className="text-center text-wrap w-1/5">{i.cep}</p>
+                        <p className="text-center text-wrap w-1/5 ">{i.address || 'Vazio'}</p>
+                        <p className="text-center text-wrap w-1/5">{i.founded ? "sim" : "não"}</p>
+                        <p className="text-center text-wrap w-1/5">{i.viability ? i.viability : "Vazio"}</p>
+                        <p className="text-center text-wrap w-1/5">{i.submitted ? "sim" : "não"}</p>
                     </div>
                 ))}
             </div>

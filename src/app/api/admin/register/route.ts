@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Admin } from "../../../../database/entities/admin";
-import AppDataSource from "../../../../database";
+import { prisma } from "../../../../../prisma";
+import { genSaltSync, hashSync } from "bcrypt";
 
 export const POST = async (req: NextRequest) => {
     const { user, password } = await req.json();
@@ -8,20 +8,23 @@ export const POST = async (req: NextRequest) => {
     if (!api_key || api_key != process.env.API_KEY) {
         return NextResponse.json({ message: 'invalid API key' }, { status: 400 });
     }
+    function HashPassword(pass: string) {
+        const salt = genSaltSync();
+        const hash = hashSync(pass, salt);
+        return hash
+    }
     try {
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize()
-        }
-        const repository = AppDataSource.getRepository(Admin)
-        const existingAdmin = await repository.findOne({ where: { username: user } });
+
+        const existingAdmin = await prisma.admin.findUnique({ where: { username: user } });
         if (existingAdmin) {
             return NextResponse.json({ message: "Admin already exists" }, { status: 400 });
         }
-
-        const newAdmin = new Admin();
-        newAdmin.username = user;
-        newAdmin.password = password;
-        await repository.save(newAdmin);
+        await prisma.admin.create({
+            data: {
+                username: user,
+                password: HashPassword(password)
+            }
+        })
         return NextResponse.json({ message: "Admin created successfully" }, { status: 201 });
     } catch (error) {
         console.error(error);

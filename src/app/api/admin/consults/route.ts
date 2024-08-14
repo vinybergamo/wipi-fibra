@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
-import { Consult } from "../../../../database/entities/consults";
-import AppDataSource from "../../../../database";
+import { prisma } from "../../../../../prisma";
 
 const JWT_SECRET = process.env.SECRET_KEY || 'secret';
 
@@ -23,15 +22,11 @@ export const POST = async (req: NextRequest) => {
     }
 
     try {
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize()
-        }
-        const repository = AppDataSource.getRepository(Consult)
         if (filters) {
-            const consults = await repository.find({ where: { ...filters } })
+            const consults = await prisma.consult.findMany({ where: { ...filters } })
             return NextResponse.json({ consults }, { status: 200 });
         }
-        const consults = await repository.find()
+        const consults = await prisma.consult.findMany()
         return NextResponse.json({ consults }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error }, { status: 400 });

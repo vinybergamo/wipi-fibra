@@ -1,1 +1,0 @@
-export { Consult } from './consults'

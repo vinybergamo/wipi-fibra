@@ -14,3 +14,4 @@ export const loginAdmin = async (user: string, password: string) => {
 export const registerAdmin = async (user: string, password: string) => {
     const res = await fetch('/api/admin/register', { method: 'POST', body: JSON.stringify({ user, password }), headers: { "api_key": process.env.API_KEY || 'api_key' } })
 }
+

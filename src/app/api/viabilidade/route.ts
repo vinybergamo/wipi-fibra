@@ -1,7 +1,6 @@
-import AppDataSource from "../../../database";
-import { Consult } from "../../../database/entities/consults";
 import axios from "axios";
 import { type NextRequest, NextResponse } from "next/server";
+import { prisma } from "../../../../prisma";
 export const POST = async (
   req: NextRequest,
 ) => {
@@ -11,13 +10,6 @@ export const POST = async (
   if (!address && !number) {
     return NextResponse.json({ error: "Invalid address" }, { status: 400 });
   } else {
-    try {
-      if (!AppDataSource.isInitialized) {
-        await AppDataSource.initialize()
-      }
-    } catch (err) {
-      console.log(err)
-    }
     try {
       let token = body.token
       if (!body.token) {
@@ -45,24 +37,28 @@ export const POST = async (
       if (!response.data.success) {
         throw new Error("Api error");
       }
-      if (trackId && AppDataSource.isInitialized) {
-        const repository = AppDataSource.getRepository(Consult)
-        await repository.update(trackId, {
-          viability: "Viável",
-          address: `${address}, ${number}`
-        })
+      try {
+
+        if (trackId) {
+          await prisma.consult.update({
+            where: { id: trackId }, data: {
+              viability: "Viável",
+              address: `${address}, ${number}`
+            }
+          })
+        }
+      } catch (e) {
+        console.log(e)
       }
       return NextResponse.json({ success: "OK", response: response.data, trackId }, { status: 200 });
     } catch (error) {
       try {
-        if (!AppDataSource.isInitialized) {
-          await AppDataSource.initialize()
-        }
-        if (trackId && AppDataSource.isInitialized) {
-          const repository = AppDataSource.getRepository(Consult)
-          await repository.update(trackId, {
-            viability: "Inviável",
-            address: `${address}, ${number}`
+        if (trackId) {
+          await prisma.consult.update({
+            where: { id: trackId }, data: {
+              viability: "Inviável",
+              address: `${address}, ${number}`
+            }
           })
         }
       } catch (error) {
