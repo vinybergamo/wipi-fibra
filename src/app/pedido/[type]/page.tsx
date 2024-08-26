@@ -90,7 +90,7 @@ export default function Order({ params }: { params: { type: 'pf' | 'pj' } }) {
 
                         <CustomInputRadio defaultValue={data.plano} label='Qual seu plano?' required handleSelect={(value: string) => { changeField(value, 'plano') }}
                             values={availablePlans.length > 0 ? availablePlans : [
-                                { value: '500 mega - R$ 269,00 por mês', label: '500 mega - R$ 99,00 por mês' },
+                                { value: '500 mega - R$ 99,00 por mês', label: '500 mega - R$ 99,00 por mês' },
                                 { value: '600 mega - R$ 109,00 por mês', label: '600 mega - R$ 109,00 por mês' },
                                 { value: '1 Giga - R$ 169,00 por mês', label: '1 Giga - R$ 169,00 por mês' },
                                 { value: '2 Gigas - R$ 269,00 por mês', label: '2 Gigas - R$ 269,00 por mês' },
